@@ -5,8 +5,6 @@ const BusinessSchema  = mongoose.Schema({
     name:{
         type:String,
         required:true,
-        minLength:[3,'name should be min 3 letter'],
-        maxLength: [15,'name should be max 15 letter']
     },
     BusinessName:{
         type:String,
@@ -25,14 +23,10 @@ const BusinessSchema  = mongoose.Schema({
     password:{
         type:String,
         required:true,
-        minLength:[3,'name should be min 3 letter'],
-        maxLength: [15,'name should be max 15 letter']
     },
     BusinessPhonenumber:{
         type:Number,
         required:true,
-        min:10,
-        max:10
     }
 
 })

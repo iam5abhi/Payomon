@@ -3,6 +3,7 @@ const { check } = require('express-validator')
 const res = require("express/lib/response")
 const router = express.Router()
 const customController = require('../Controller/customerController')
+const isAuthenticationCustomer = require('../middleware/CustomerMidddleware')
 
 
 router.get('/',()=>{
@@ -29,7 +30,18 @@ customController.Verifycustomer
 )
 
 
-router.post('/payment/:id',customController.PayementMethod)
+router.post('/payment/:id',isAuthenticationCustomer,customController.PayementMethod)
+
+
+router
+     .route('/wallet')
+     .get(customController.checkWallet)
+     .post(customController.AddMoneyWallet)
+
+
+router
+      .route('/wallet/:id')
+     .put(customController.updatewallet)
 
 
 

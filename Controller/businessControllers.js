@@ -28,7 +28,7 @@ const creatuser =async(req,res,next)=>{
       //***************************hashpassword hacker cannot be hack the password******************************************************** */  
        let hashpassword
        try{ 
-            hashpassword = bcrypt.hash(password,12)
+            hashpassword = await bcrypt.hash(password,12)
             console.log(hashpassword,"usresh")
         }
         catch(err){
@@ -47,7 +47,7 @@ const creatuser =async(req,res,next)=>{
                 console.log(password,"passowrd")
                 console.log(confirmpassword,"confirsmpassword")
                 if(password===confirmpassword){
-                  CreateDBusiness.save()
+                  await  CreateDBusiness.save()
                 }
             }catch(err){
                 let error = `data is not be saved sucessfully ${err}`
@@ -61,7 +61,6 @@ const creatuser =async(req,res,next)=>{
           password:CreateDBusiness.password,
           Pin:CreateDBusiness.pin
       })
-      debugger
 }
 
 
@@ -103,7 +102,7 @@ const creatuser =async(req,res,next)=>{
             }
             catch(err){
                 console.log(err)
-            }S
+            }
              res.json({
                  message:"Bussiness user logged in successful",
                  UserId:User.id,
@@ -184,7 +183,7 @@ const creatuser =async(req,res,next)=>{
  }
 
 
- const updateBankDetail =(req,res,next)=>{
+ const updateBankDetail =async(req,res,next)=>{
       console.log(req.query.name)
       const AccountNumberC=req.query.name
       const {AccountholderName,AccountNumber,BankName,IFSC_CODE} =req.body
@@ -205,7 +204,7 @@ const creatuser =async(req,res,next)=>{
          })
  }
 
-const DeletebankDetail =(req,res,next)=>{
+const DeletebankDetail =async(req,res,next)=>{
     console.log(req.query.name)
     const AccountNumber=req.query.name
              await MerchantModel.findByIdAndRemove(AccountNumber, function(err){

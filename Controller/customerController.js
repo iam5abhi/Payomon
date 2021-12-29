@@ -5,6 +5,7 @@ const Customer =require('../Model/Customerschema')
 const  SecretKey ="hellocodeoftic76uy687tu"
 const BusinessModel =require('../Model/BusinessSchema')
 const PaymentModel = require('../Model/paymentSchema')
+const walletcustomerModel = require('../Model/CustomerwalletSchema')
 
 
 const createcustomer =async(req,res,next)=>{
@@ -158,8 +159,68 @@ const PayementMethod =async(req,res,next)=>{
 
     //   })
 }
+
+const AddMoneyWallet =async(req,res,next)=>{
+      console.log(req.body)
+      const wallet =req.body
+    //   let intialwallet 
+    //   try{
+    //      intialwallet =await walletcustomerModel.find()
+    //      console.log("intialwallet",intialwallet)
+    //   }catch(err){
+    //       res.status(500).json({
+    //           msg:'cannot be find'
+    //       })
+    //   }  
+      const data =new walletcustomerModel({
+          money:5000
+      })
+       data.save()
+      console.log(data)
+      res.status(201).json({
+          wallet:data
+      })
+}
+
+
+const checkWallet = async(req,res,next)=>{
+    const data = await walletcustomerModel.find()
+    console.log(data)
+    res.status(201).json({
+        data:data
+    })
+}
+
+const updatewallet =async(req,res,next)=>{
+    console.log(req.params.id)
+      var initialwallet
+       try{
+            initialwallet = await walletcustomerModel.findOne(initialwallet)
+       }catch(err){
+           let error =`Initial wallet cannot be find ${err}`
+           res.status(500).json({
+               msg:`data no be fetch && pleae try again`,
+               error:error
+           })
+       }
+      
+    let updatedData 
+    try{
+       updatedData = await walletcustomerModel.findOneAndUpdate(req.params.id,{
+           money:req.body.wallet+initialwallet.money*1
+       },
+      {new:true} )
+    }catch(err){
+        console.log(error)
+    }
+     res.status(200).json({
+        wallet:updatedData
+    })
+}
+
 module.exports.PayementMethod=PayementMethod
 module.exports.createcustomer=createcustomer
 module.exports.Verifycustomer=Verifycustomer
-
-
+module.exports.AddMoneyWallet=AddMoneyWallet
+module.exports.checkWallet=checkWallet
+module.exports.updatewallet=updatewallet

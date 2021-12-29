@@ -4,13 +4,14 @@ const { check } = require('express-validator')
 const res = require('express/lib/response')
 const router = express.Router()
 const businessController = require('../Controller/businessControllers')
+const isAuthentication =  require('../middleware/merchantmiddleware')
 
 
 
-// router.get('/',(req,res)=>{
-//   console.log(req)
-//   res.send("hello word");
-// })
+//  router.get('/',(req,res)=>{
+//    console.log(req)
+//    res.send("hello word");
+//  })
 
 router.post('/signup',
 [
@@ -31,9 +32,7 @@ businessController.VerifyBussiness
 )
 
 
-router
-     .route('/')
-     .get(businessController.Transaction)
+router.route('/').get(isAuthentication,businessController.Transaction)
 
 router  
     .route('/addbankdetails')
