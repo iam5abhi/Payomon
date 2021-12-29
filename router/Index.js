@@ -1,13 +1,3 @@
-//  const { Router } = require('express');
-//  const { check } = require('express-validator')
-//  const express =require('express');
-//  const router = express.Router();
-//  const BussinesController =require('../Controller/businessControllers')
- 
-
-
-
-
 
 const express = require('express')
 const { check } = require('express-validator')
@@ -17,10 +7,10 @@ const businessController = require('../Controller/businessControllers')
 
 
 
-router.get('/',(req,res)=>{
-  console.log(req)
-  res.send("hello word");
-})
+// router.get('/',(req,res)=>{
+//   console.log(req)
+//   res.send("hello word");
+// })
 
 router.post('/signup',
 [
@@ -40,5 +30,25 @@ router.post('/signIn',[
 businessController.VerifyBussiness
 )
 
+
+router
+     .route('/')
+     .get(businessController.Transaction)
+
+router  
+    .route('/addbankdetails')
+    .get(businessController.getBankDetails)
+    .post([
+      check('AccountholderName').isEmpty().isLength({min:4,max:20}).withMessage(`The name  must be 4 chartacter minimum and maximum 15 char`),
+      check('AccountNumber').isEmpty().isLength({min:12,max:16}).withMessage(`A/c number min 12 digit number and 16 digit number`),
+      check('BankName').isEmpty(),
+      check('IFSC_CODE').isLength({min:6}).withMessage('IFSC_CODE must be at least 6')
+    ],
+       businessController.AddBank
+    )
+    .put(businessController.updateBankDetail)
+    .delete(businessController.DeletebankDetail)
+
+  
 
 module.exports=router

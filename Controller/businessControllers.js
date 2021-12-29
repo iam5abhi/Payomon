@@ -1,7 +1,10 @@
 const bcrypt = require('bcrypt');
+const res = require('express/lib/response');
 const jwt = require('jsonwebtoken')
 const BusinessModel =require('../Model/BusinessSchema')
 const SecretKey ="chuijswswuqd6429097"
+const PaymentModel = require('../Model/paymentSchema')
+const MerchantModel = require('../Model/MerchantBankSchema')
 
 
 const creatuser =async(req,res,next)=>{
@@ -58,6 +61,7 @@ const creatuser =async(req,res,next)=>{
           password:CreateDBusiness.password,
           Pin:CreateDBusiness.pin
       })
+      debugger
 }
 
 
@@ -109,8 +113,120 @@ const creatuser =async(req,res,next)=>{
     }
 
 
+ const Transaction = async(req,res,next)=>{
+      let transcaction_data 
+       try{
+         transcaction_data = await PaymentModel.find()
+       }catch(err){
+           let error = `data could not be find Please try again`
+          res.send(`<h1>${error}<h1>`)
+       }
+       res.status(200).json({
+           BusinessPhonenumber:transcaction_data.businessPhoneNumer,
+           BusinessName:transcaction_data.businessName,
+           BusinessEmail:transcaction_data.b
+       })
+ }
 
+ const getBankDetails =async(req,res,next)=>{
+        console.log(req.query.name)
+       const AccountNumber=req.query.name
+         let ShowAccountDetail 
+       try{
+         ShowAccountDetail =await MerchantModel.findOne({AccountNumber:AccountNumber})
+       }catch(err){
+           res.status(500),json({
+               msg:'internal server Error'
+           })
+       }
+       res.status.json({
+            Name: ShowAccountDetail.AccountholderName,
+            AccountNumber:ShowAccountDetail.AccountNumber,
+            BankName:ShowAccountDetail.BankName,
+            IFSC:ShowAccountDetail.IFSC_CODE
+       })
+ }
+
+ const AddBank  = async(req,res,next)=>{
+    console.log(req.body)
+    const {AccountholderName,AccountNumber,BankName,IFSC_CODE} =req.body
+       let existingAccountNumner 
+        try{
+            existingAccountNumner = await MerchantModel.findOne({AccountNumber:AccountNumber})
+        }catch(err){
+              let errror =`cannot be fetch data ${err}`
+        }
+        if(existingAccountNumner){
+            console.log('A/c number is already exits')
+        }
+        
+         try{
+            const AdddBanDetails =new MerchantModel({
+                AccountholderName,
+                AccountNumber,
+                BankName,
+                IFSC_CODE
+           })  
+                  await AdddBanDetails.save()
+         }catch(err){
+             res.status(500).json({
+                 message:'Bank detail cannot be added',
+                 error:err
+             })
+         }
+         res.status.json({
+            Name: AdddBanDetails.AccountholderName,
+            AccountNumber:AdddBanDetails.AccountNumber,
+            BankName:AdddBanDetails.BankName,
+            IFSC:AdddBanDetails.IFSC_CODE
+         })
+
+ }
+
+
+ const updateBankDetail =(req,res,next)=>{
+      console.log(req.query.name)
+      const AccountNumberC=req.query.name
+      const {AccountholderName,AccountNumber,BankName,IFSC_CODE} =req.body
+      let updatedData 
+         try{
+            updatedData = await MerchantModel.findOneAndUpdate(AccountNumberC,{
+                AccountholderName,AccountNumber,BankName,IFSC_CODE
+            },
+           {new:true} )
+         }catch(err){
+             console.log(error)
+         }
+         req.status.json({
+             Name:updatedData.AccountholderName,
+             AccountNumber:updatedData.AccountNumber,
+             BankName:updatedData.BankName,
+             IFSC_CODE:updatedData.IFSC_CODE
+         })
+ }
+
+const DeletebankDetail =(req,res,next)=>{
+    console.log(req.query.name)
+    const AccountNumber=req.query.name
+             await MerchantModel.findByIdAndRemove(AccountNumber, function(err){
+                if(err){
+                    res.send("error",err)
+                } else {
+                    res.status(200).json({
+                        msg:'Account number is deleted suceessfully'
+                    })
+                }
+             });
+    
+} 
+    
+
+module.exports.getBankDetails=getBankDetails
+module.exports.AddBank =AddBank
+module.exports.Transaction=Transaction
 module.exports.creatuser=creatuser
 module.exports.VerifyBussiness=VerifyBussiness
+module.exports.updateBankDetail =updateBankDetail
+module.exports.DeletebankDetail=DeletebankDetail
 
 
