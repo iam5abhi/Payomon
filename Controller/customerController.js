@@ -48,16 +48,19 @@ const createcustomer =async(req,res,next)=>{
             phoneNumber
         })
           try{
-                console.log(password,"passowrd")
-                console.log(confirmpassword,"confirsmpassword")
                 if(password===confirmpassword){
-                      createdcustomer.save()
+//******************************password and confirpassword are same  customer Registration SucessFully************************************************************************************************************************/
+                      await createdcustomer.save()
+//*********************************************************************************************************************************** */
+//**********************************calling for customer Wallet****************************************************************************** */
+          createCustomerWallet(100,createdcustomer.name,createdcustomer.phoneNumber)
+//************************************************************************************************************************/
                 }
             }catch(err){
                 let error = `data is not be saved sucessfully ${err}`
                 console.log(error)
             }
-             createCustomerWallet(100,createdcustomer.name,createdcustomer.phoneNumber)
+//************************************Responce the customer*************************************************************************** */            
             res.status(201).json({
                 Name:createdcustomer.name,
                 Email:createdcustomer.email,
@@ -67,11 +70,11 @@ const createcustomer =async(req,res,next)=>{
 }
 
 
-//     //***************************Business Customeruser Login Fuctinalty************************************************** */
+////***************************Business Customeruser Login Fuctinalty************************************************** */
      const Verifycustomer = async(req,res,next)=>{
-         console.log(req.body,"yhjjuyh")
-                 const {email,password}=req.body
-                 let Customeruser 
+
+            const {email,password}=req.body
+                let Customeruser 
                  try{
                      Customeruser = await Customer.findOne({email:email})
                      console.log(Customeruser)
@@ -95,6 +98,7 @@ const createcustomer =async(req,res,next)=>{
                              error:error
                          })
                      }
+//**********************************generate the token Cutomer Suessfully Login after one Hur************************************************************************************************************ */
           let token 
           try{
               token  = jwt.sign({
@@ -164,20 +168,8 @@ const PayementMethod =async(req,res,next)=>{
     //   })
 }
 
-// const AddMoneyWallet =async(req,res,next)=>{
-//       console.log(req.body)
-//       const wallet =req.body 
-//       const data =new walletcustomerModel({
-//           money:5000
-//       })
-//        data.save()
-//       console.log(data)
-//       res.status(201).json({
-//           wallet:data
-//       })
-// }
 
-
+//***********************************Create Customer wallet******************************************************************************************* */
 const createCustomerWallet =async(amount,name,Phonenumber)=>{
     console.log("name",name),
     console.log("Amount",amount)
@@ -190,7 +182,7 @@ const createCustomerWallet =async(amount,name,Phonenumber)=>{
          await data.save()
 }
 
-
+//**********************************Check the Customer Wallet************************************************************************** */
 const checkWallet = async(req,res,next)=>{
     const data = await walletcustomerModel.find()
     console.log(data)
@@ -198,69 +190,65 @@ const checkWallet = async(req,res,next)=>{
         data:data
     })
 }
-
+//******************************customer Add money ton Wallet ********************************************************************************************************* */
 const updatewallet =async(req,res,next)=>{
-    console.log(req.params.id)
-      var initialwallet
-       try{
-            initialwallet = await walletcustomerModel.findOne(req.params.id)
-       }catch(err){
-           let error =`Initial wallet cannot be find ${err}`
-           res.status(500).json({
-               msg:`data no be fetch && pleae try again`,
-               error:error
-           })
-       }
-      
+    var initialwallet
+            try{
+                    initialwallet = await walletcustomerModel.findOne(req.params.id)
+            }catch(err){
+                let error =`Initial wallet cannot be find ${err}`
+                res.status(500).json({
+                    msg:`data no be fetch && pleae try again`,
+                    error:error
+                })
+            }
+            
     let updatedData 
-    try{
-       updatedData = await walletcustomerModel.findOneAndUpdate(req.params.id,{
-           money:req.body.wallet+initialwallet.money*1
-       },
-      {new:true} )
-    }catch(err){
-        console.log(error)
-    }
-     res.status(200).json({
-        wallet:updatedData
-    })
-}
-
-
-const sendMoenyToWallet=async(req,res,next)=>{
-      console.log(req.params.id)
-      const id =req.params.id
-      var initialwallet
-      try{
-             initialwallet = await walletcustomerModel.findOne({_id:id})
-             console.log(initialwallet.money)
-      }catch(err){
-          let error =  `could not find a data ${err}`
-          res.status.json({
-              error:error
-          })
-      }  
-    let MerchantPhoneNumber
-    let {phoneNumber}=req.body
-    console.log(phoneNumber)
-          try{
-            MerchantPhoneNumber= await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
-            console.log(MerchantPhoneNumber,'hey vikas are u ok')
-          }catch(err){
-                  console.log("error")
-          }
-   let sendingMoney=req.body.wallet
-   let updatewallet
-        try{
-            updatewallet =await walletcustomerModel.findOneAndUpdate(req.params.id,{
-                money:initialwallet.money-sendingMoney
+            try{
+            updatedData = await walletcustomerModel.findOneAndUpdate(req.params.id,{
+                money:req.body.wallet+initialwallet.money*1
             },
-           {new:true} )
-        }catch(err){
-
+            {new:true} )
+            }catch(err){
+                console.log(error)
+            }
+            res.status(200).json({
+                wallet:updatedData
+            })
         }
 
-        console.log(MerchantPhoneNumber.phoneNumber,"i amjwif")
+//******************************SEND Money  Customer To Merchant********************************************************************************************* */
+const sendMoenyToWallet=async(req,res,next)=>{
+      const id =req.params.id
+      var initialwallet
+                try{
+                        initialwallet = await walletcustomerModel.findOne({_id:id})
+                        console.log(initialwallet.money)
+                }catch(err){
+                    let error =  `could not find a data ${err}`
+                    res.status.json({
+                        error:error
+                    })
+                }  
+    let MerchantPhoneNumber
+    let {phoneNumber}=req.body
+                try{
+                    MerchantPhoneNumber= await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
+                    console.log(MerchantPhoneNumber,'hey vikas are u ok')
+                }catch(err){
+                        console.log("error")
+                }
+   let sendingMoney=req.body.wallet
+   let updatewallet
+                try{
+                    updatewallet =await walletcustomerModel.findOneAndUpdate(req.params.id,{
+                        money:initialwallet.money-sendingMoney
+                    },
+                {new:true} )
+                }catch(err){
+
+                }
+//*********************************Calling to the BusinessWallet Function*********************************************************************************************************************************** */
         BusinessWallet(sendingMoney,MerchantPhoneNumber.phoneNumber)
         res.json({
             money:updatewallet

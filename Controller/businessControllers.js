@@ -45,10 +45,11 @@ const creatuser =async(req,res,next)=>{
             BusinessPhonenumber
         })
           try{
-                console.log(password,"passowrd")
-                console.log(confirmpassword,"confirsmpassword")
                 if(password===confirmpassword){
-                  await  CreateDBusiness.save()
+//******************************password and confirpassword are same  customer Registration SucessFully************************************************************************************************************************/
+                         await  CreateDBusiness.save()
+////**********************************calling for Business Wallet****************************************************************************** */                         
+                     createBusinessWallet(00,CreateDBusiness.name,CreateDBusiness.BusinessPhonenumber)
                 }
             }catch(err){
                 let error = `data is not be saved sucessfully ${err}`
@@ -62,11 +63,11 @@ const creatuser =async(req,res,next)=>{
           password:CreateDBusiness.password,
           Pin:CreateDBusiness.pin
       })
-      createBusinessWallet(00,CreateDBusiness.name,CreateDBusiness.BusinessPhonenumber)
+    
 }
 
 
-//     //***************************Business User Login Fuctinalty************************************************** */
+////***************************Business User Login Fuctinalty************************************************** */
      const VerifyBussiness = async(req,res,next)=>{
          console.log(req.body,"yhjjuyh")
                  const {BusinessEmail,password}=req.body
@@ -128,7 +129,7 @@ const creatuser =async(req,res,next)=>{
            BusinessEmail:transcaction_data.b
        })
  }
-
+//******************************************Check a Bank Details**************************************************************************************************************************** */
  const getBankDetails =async(req,res,next)=>{
         console.log(req.query.name)
        const AccountNumber=req.query.name
@@ -147,21 +148,21 @@ const creatuser =async(req,res,next)=>{
             IFSC:ShowAccountDetail.IFSC_CODE
        })
  }
-
+//*******************************************Add Bank details*************************************************************************************************************************** */
  const AddBank  = async(req,res,next)=>{
     console.log(req.body)
     const {AccountholderName,AccountNumber,BankName,IFSC_CODE} =req.body
        let existingAccountNumner 
+                try{
+                    existingAccountNumner = await MerchantModel.findOne({AccountNumber:AccountNumber})
+                }catch(err){
+                    let errror =`cannot be fetch data ${err}`
+                }
+                if(existingAccountNumner){
+                    console.log('A/c number is already exits')
+                }
+                
         try{
-            existingAccountNumner = await MerchantModel.findOne({AccountNumber:AccountNumber})
-        }catch(err){
-              let errror =`cannot be fetch data ${err}`
-        }
-        if(existingAccountNumner){
-            console.log('A/c number is already exits')
-        }
-        
-         try{
             const AdddBanDetails =new MerchantModel({
                 AccountholderName,
                 AccountNumber,
@@ -169,7 +170,7 @@ const creatuser =async(req,res,next)=>{
                 IFSC_CODE
            })  
                   await AdddBanDetails.save()
-         }catch(err){
+        }catch(err){
              res.status(500).json({
                  message:'Bank detail cannot be added',
                  error:err
@@ -184,82 +185,70 @@ const creatuser =async(req,res,next)=>{
 
  }
 
-
+//***********************************Update the Bank Details******************************************************************************************************************************** */
  const updateBankDetail =async(req,res,next)=>{
-      console.log(req.query.name)
       const AccountNumberC=req.query.name
       const {AccountholderName,AccountNumber,BankName,IFSC_CODE} =req.body
-      let updatedData 
-         try{
-            updatedData = await MerchantModel.findOneAndUpdate(AccountNumberC,{
-                AccountholderName,AccountNumber,BankName,IFSC_CODE
-            },
-           {new:true} )
-         }catch(err){
-             console.log(error)
-         }
-         req.status.json({
-             Name:updatedData.AccountholderName,
-             AccountNumber:updatedData.AccountNumber,
-             BankName:updatedData.BankName,
-             IFSC_CODE:updatedData.IFSC_CODE
-         })
+                let updatedData 
+                    try{
+                        updatedData = await MerchantModel.findOneAndUpdate(AccountNumberC,{
+                            AccountholderName,AccountNumber,BankName,IFSC_CODE
+                        },
+                    {new:true} )
+                    }catch(err){
+                        console.log(error)
+                    }
+                    req.status.json({
+                        Name:updatedData.AccountholderName,
+                        AccountNumber:updatedData.AccountNumber,
+                        BankName:updatedData.BankName,
+                        IFSC_CODE:updatedData.IFSC_CODE
+                    })
  }
 
+//*************************************Delete the Bank Detail from my account************************************************************************************************************************** */
 const DeletebankDetail =async(req,res,next)=>{
-    console.log(req.query.name)
     const AccountNumber=req.query.name
              await MerchantModel.findByIdAndRemove(AccountNumber, function(err){
-                if(err){
-                    res.send("error",err)
-                } else {
-                    res.status(200).json({
-                        msg:'Account number is deleted suceessfully'
-                    })
-                }
-             });
-    
+                    if(err){
+                        res.send("error",err)
+                    }else {
+                        res.status(200).json({
+                            msg:'Account number is deleted suceessfully'
+                        })
+                    }
+               });
 } 
 
-// function checkWalletBusiness(sendingBlance){
-//      console.log("sendingBlance",sendingBlance)
-// }
-
-//********************************BusinesswalletFunction********************************************* */
+//********************************BusinesswalletFunction*********************************************************************************/
 const createBusinessWallet =async(amount,name,phoneNumber)=>{
-      console.log(amount)
-      console.log(phoneNumber)
-      console.log(name)
     const  createdWallet  = new BusinesWalletModel({
             name:name,
             phoneNumber:phoneNumber,
             wallet:amount
           })
-            await createdWallet.save()
+         await createdWallet.save()
 }
 
 
 //*****************************************Received Money for customer functionalty************************************************************** */
  const BusinessWallet =async(CustomersendingMoney,phoneNumber)=>{
-       console.log("CustomersendingMoney",CustomersendingMoney)
-       console.log("phoneNumber",phoneNumber)
-         let initialwallet 
-              try{
+        let initialwallet 
+                try{
                 initialwallet=await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
-              }catch(err){
+                }catch(err){
                     console.log('not fetch data propery')
-              }
-              console.log(initialwallet,"i am are ")
-              let wallet = initialwallet.wallet
-               let updateBusinessWallet
-                  try{
-                        updateBusinessWallet = await BusinesWalletModel.findOneAndUpdate(phoneNumber,
-                            {
-                              wallet:wallet+CustomersendingMoney
-                            },{new:true})
-                  }catch(err){
-                      console.log('Transaction failed, Please try again')
-                  }
+                }
+        let wallet = initialwallet.wallet
+        let updateBusinessWallet
+                try{
+                    updateBusinessWallet = await BusinesWalletModel.findOneAndUpdate(phoneNumber,
+                        {
+                            wallet:wallet+CustomersendingMoney
+                        },{new:true})
+                }catch(err){
+                    console.log('Transaction failed, Please try again')
+                }
  }
 
 
