@@ -48,6 +48,11 @@ router
     .put(businessController.updateBankDetail)
     .delete(businessController.DeletebankDetail)
 
+ 
+router
+     .route('/checkwallet')
+     .get()    
+
   
 
 module.exports=router

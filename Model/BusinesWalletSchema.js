@@ -1,12 +1,19 @@
 const mongoose = require('mongoose')
 
-const walletSchema =  mongoose.Schema({
+const BusinesWalletSchema =  mongoose.Schema({
+    name:{
+        type:String,
+    },
     wallet:{
         type:Number,
         required:true
+    },
+    phoneNumber:{
+        type:Number
     }
+  
 })
 
-const walletModel = new mongoose.model('walletModel',walletSchema)
+const BusinesWalletModel = new mongoose.model('BusinesWalletModel',BusinesWalletSchema)
 
-module.exports=walletModel
+module.exports=BusinesWalletModel

@@ -6,6 +6,9 @@ const  SecretKey ="hellocodeoftic76uy687tu"
 const BusinessModel =require('../Model/BusinessSchema')
 const PaymentModel = require('../Model/paymentSchema')
 const walletcustomerModel = require('../Model/CustomerwalletSchema')
+const BusinesWalletModel =require('../Model/BusinesWalletSchema')
+const BusinessWallet =require('./businessControllers').BusinessWallet
+
 
 
 const createcustomer =async(req,res,next)=>{
@@ -54,12 +57,13 @@ const createcustomer =async(req,res,next)=>{
                 let error = `data is not be saved sucessfully ${err}`
                 console.log(error)
             }
-      res.status(201).json({
-          Name:createdcustomer.name,
-          Email:createdcustomer.email,
-         Phonenumber:createdcustomer.phoneNumber,
-          password:createdcustomer.password
-      })
+             createCustomerWallet(100,createdcustomer.name,createdcustomer.phoneNumber)
+            res.status(201).json({
+                Name:createdcustomer.name,
+                Email:createdcustomer.email,
+                Phonenumber:createdcustomer.phoneNumber,
+                password:createdcustomer.password
+            })
 }
 
 
@@ -160,26 +164,30 @@ const PayementMethod =async(req,res,next)=>{
     //   })
 }
 
-const AddMoneyWallet =async(req,res,next)=>{
-      console.log(req.body)
-      const wallet =req.body
-    //   let intialwallet 
-    //   try{
-    //      intialwallet =await walletcustomerModel.find()
-    //      console.log("intialwallet",intialwallet)
-    //   }catch(err){
-    //       res.status(500).json({
-    //           msg:'cannot be find'
-    //       })
-    //   }  
-      const data =new walletcustomerModel({
-          money:5000
-      })
-       data.save()
-      console.log(data)
-      res.status(201).json({
-          wallet:data
-      })
+// const AddMoneyWallet =async(req,res,next)=>{
+//       console.log(req.body)
+//       const wallet =req.body 
+//       const data =new walletcustomerModel({
+//           money:5000
+//       })
+//        data.save()
+//       console.log(data)
+//       res.status(201).json({
+//           wallet:data
+//       })
+// }
+
+
+const createCustomerWallet =async(amount,name,Phonenumber)=>{
+    console.log("name",name),
+    console.log("Amount",amount)
+    console.log("Phonenumber",Phonenumber)
+    const data =new walletcustomerModel({
+                   money:amount,
+                   name:name,
+                   Phonenumber:Phonenumber
+         })
+         await data.save()
 }
 
 
@@ -195,7 +203,7 @@ const updatewallet =async(req,res,next)=>{
     console.log(req.params.id)
       var initialwallet
        try{
-            initialwallet = await walletcustomerModel.findOne(initialwallet)
+            initialwallet = await walletcustomerModel.findOne(req.params.id)
        }catch(err){
            let error =`Initial wallet cannot be find ${err}`
            res.status(500).json({
@@ -218,9 +226,50 @@ const updatewallet =async(req,res,next)=>{
     })
 }
 
+
+const sendMoenyToWallet=async(req,res,next)=>{
+      console.log(req.params.id)
+      const id =req.params.id
+      var initialwallet
+      try{
+             initialwallet = await walletcustomerModel.findOne({_id:id})
+             console.log(initialwallet.money)
+      }catch(err){
+          let error =  `could not find a data ${err}`
+          res.status.json({
+              error:error
+          })
+      }  
+    let MerchantPhoneNumber
+    let {phoneNumber}=req.body
+    console.log(phoneNumber)
+          try{
+            MerchantPhoneNumber= await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
+            console.log(MerchantPhoneNumber,'hey vikas are u ok')
+          }catch(err){
+                  console.log("error")
+          }
+   let sendingMoney=req.body.wallet
+   let updatewallet
+        try{
+            updatewallet =await walletcustomerModel.findOneAndUpdate(req.params.id,{
+                money:initialwallet.money-sendingMoney
+            },
+           {new:true} )
+        }catch(err){
+
+        }
+
+        console.log(MerchantPhoneNumber.phoneNumber,"i amjwif")
+        BusinessWallet(sendingMoney,MerchantPhoneNumber.phoneNumber)
+        res.json({
+            money:updatewallet
+        })
+}
+
 module.exports.PayementMethod=PayementMethod
 module.exports.createcustomer=createcustomer
 module.exports.Verifycustomer=Verifycustomer
-module.exports.AddMoneyWallet=AddMoneyWallet
 module.exports.checkWallet=checkWallet
 module.exports.updatewallet=updatewallet
+module.exports.sendMoenyToWallet =sendMoenyToWallet

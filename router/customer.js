@@ -36,12 +36,16 @@ router.post('/payment/:id',isAuthenticationCustomer,customController.PayementMet
 router
      .route('/wallet')
      .get(customController.checkWallet)
-     .post(customController.AddMoneyWallet)
 
 
 router
-      .route('/wallet/:id')
+     .route('/wallet/:id')
      .put(customController.updatewallet)
+
+
+router
+     .route('/wallet/sendmonytowallet/:id')
+     .put(customController.sendMoenyToWallet)     
 
 
 

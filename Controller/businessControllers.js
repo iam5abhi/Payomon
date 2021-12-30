@@ -5,6 +5,7 @@ const BusinessModel =require('../Model/BusinessSchema')
 const SecretKey ="chuijswswuqd6429097"
 const PaymentModel = require('../Model/paymentSchema')
 const MerchantModel = require('../Model/MerchantBankSchema')
+const BusinesWalletModel = require('../Model/BusinesWalletSchema')
 
 
 const creatuser =async(req,res,next)=>{
@@ -61,6 +62,7 @@ const creatuser =async(req,res,next)=>{
           password:CreateDBusiness.password,
           Pin:CreateDBusiness.pin
       })
+      createBusinessWallet(00,CreateDBusiness.name,CreateDBusiness.BusinessPhonenumber)
 }
 
 
@@ -218,7 +220,48 @@ const DeletebankDetail =async(req,res,next)=>{
              });
     
 } 
-    
+
+// function checkWalletBusiness(sendingBlance){
+//      console.log("sendingBlance",sendingBlance)
+// }
+
+//********************************BusinesswalletFunction********************************************* */
+const createBusinessWallet =async(amount,name,phoneNumber)=>{
+      console.log(amount)
+      console.log(phoneNumber)
+      console.log(name)
+    const  createdWallet  = new BusinesWalletModel({
+            name:name,
+            phoneNumber:phoneNumber,
+            wallet:amount
+          })
+            await createdWallet.save()
+}
+
+
+//*****************************************Received Money for customer functionalty************************************************************** */
+ const BusinessWallet =async(CustomersendingMoney,phoneNumber)=>{
+       console.log("CustomersendingMoney",CustomersendingMoney)
+       console.log("phoneNumber",phoneNumber)
+         let initialwallet 
+              try{
+                initialwallet=await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
+              }catch(err){
+                    console.log('not fetch data propery')
+              }
+              console.log(initialwallet,"i am are ")
+              let wallet = initialwallet.wallet
+               let updateBusinessWallet
+                  try{
+                        updateBusinessWallet = await BusinesWalletModel.findOneAndUpdate(phoneNumber,
+                            {
+                              wallet:wallet+CustomersendingMoney
+                            },{new:true})
+                  }catch(err){
+                      console.log('Transaction failed, Please try again')
+                  }
+ }
+
 
 module.exports.getBankDetails=getBankDetails
 module.exports.AddBank =AddBank
@@ -227,5 +270,6 @@ module.exports.creatuser=creatuser
 module.exports.VerifyBussiness=VerifyBussiness
 module.exports.updateBankDetail =updateBankDetail
 module.exports.DeletebankDetail=DeletebankDetail
+module.exports.BusinessWallet=BusinessWallet
 
 
