@@ -87,31 +87,27 @@ const creatuser =async(req,res,next)=>{
                              msg:`User Does Not extis Please Signup`
                          })
                      }
-                     let isValidPassword = false; 
-                     try{
-                         isValidPassword = bcrypt.compare(password,User.password)
-                     }catch(err){
-                         let error =`Something went Wrong ${err}`
-                         res.json({
-                             error:error
-                         })
-                     }
-          let token 
-          try{
-              token  = jwt.sign({
-                  UserId:User.id,
-                  BusinessEmail:User.BusinessEmail
-              },SecretKey,{ expiresIn :'1h' })
-            }
-            catch(err){
-                console.log(err)
-            }
-             res.json({
-                 message:"Bussiness user logged in successful",
-                 UserId:User.id,
-                 BusinessEmail:User.BusinessEmail,
-                 token:token
-             })              
+                     const match = await bcrypt.compare(password, Customeruser.password)
+                     if(match){
+                        let token 
+                                try{
+                                    token  = jwt.sign({
+                                        UserId:User.id,
+                                        BusinessEmail:User.BusinessEmail
+                                    },SecretKey,{ expiresIn :'1h' })
+                                }
+                                catch(err){
+                                    console.log(err)
+                                }
+                                res.json({
+                                    message:"Bussiness user logged in successful",
+                                    UserId:User.id,
+                                    BusinessEmail:User.BusinessEmail,
+                                    token:token
+                                })         
+                     }else{
+                         console.log('err')
+                     }                    
     }
 
 

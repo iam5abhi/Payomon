@@ -70,7 +70,7 @@ const createcustomer =async(req,res,next)=>{
 }
 
 
-////***************************Business Customeruser Login Fuctinalty************************************************** */
+////***************************Customeruser Login Fuctinalty************************************************** */
      const Verifycustomer = async(req,res,next)=>{
 
             const {email,password}=req.body
@@ -89,32 +89,27 @@ const createcustomer =async(req,res,next)=>{
                              msg:`Customeruser Does Not extis Please Signup`
                          })
                      }
-                     let isValidPassword = false; 
-                     try{
-                         isValidPassword = bcrypt.compare(password,Customeruser.password)
-                     }catch(err){
-                         let error =`Something went Wrong ${err}`
-                         res.json({
-                             error:error
-                         })
-                     }
-//**********************************generate the token Cutomer Suessfully Login after one Hur************************************************************************************************************ */
-          let token 
-          try{
-              token  = jwt.sign({
-                  userId:Customeruser.id,
-                  Email:Customeruser.email
-              },SecretKey,{ expiresIn :'1h' })
-            }
-            catch(err){
-                console.log(err)
-            }
-             res.json({
-                 message:"Bussiness Customeruser logged in successful",
-                 userId:Customeruser.id,
-                 Email:Customeruser.email,
-                 token:token
-             })              
+                     const match = await bcrypt.compare(password, Customeruser.password)
+                           if(match){
+                                 let token 
+                                   try{
+                                       token  = jwt.sign({
+                                           userId:Customeruser.id,
+                                           Email:Customeruser.email
+                                       },SecretKey,{ expiresIn :'1h' })
+                                     }
+                                     catch(err){
+                                         console.log(err)
+                                     }
+                                      res.json({
+                                          message:"Customeruser logged in successful",
+                                          userId:Customeruser.id,
+                                          Email:Customeruser.email,
+                                          token:token
+                                      })        
+                           }else{
+                               console.log('err')
+                           }        
     }
 
 

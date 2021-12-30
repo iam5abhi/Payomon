@@ -6,6 +6,14 @@ const customController = require('../Controller/customerController')
 const isAuthenticationCustomer = require('../middleware/CustomerMidddleware')
 
 
+
+router
+    .route('/')
+    .get(isAuthenticationCustomer,(req,res,next)=>{
+          res.send("<h1>Hello cod</h1>")
+    })
+
+
 router
    .route('/signup')
    .post([
