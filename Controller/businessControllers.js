@@ -251,6 +251,19 @@ const createBusinessWallet =async(amount,name,phoneNumber)=>{
                 }
  }
 
+ //******************************************Check Business Wallet************************************************************** */
+const chekBusinessWallet =async(req,res,next)=>{
+    let phoneNumber=req.query.phoneNumber
+     let walletBusiness 
+         try{
+            walletBusiness =await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
+         }catch(err){
+             res.status(500).send('Internal Server Error')
+         }
+       res.status(200).json({
+           wallet:walletBusiness.wallet
+       })  
+}
 
 module.exports.getBankDetails=getBankDetails
 module.exports.AddBank =AddBank
@@ -260,5 +273,6 @@ module.exports.VerifyBussiness=VerifyBussiness
 module.exports.updateBankDetail =updateBankDetail
 module.exports.DeletebankDetail=DeletebankDetail
 module.exports.BusinessWallet=BusinessWallet
+module.exports.chekBusinessWallet=chekBusinessWallet
 
 

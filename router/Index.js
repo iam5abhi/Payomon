@@ -7,12 +7,6 @@ const businessController = require('../Controller/businessControllers')
 const isAuthentication =  require('../middleware/merchantmiddleware')
 
 
-
-//  router.get('/',(req,res)=>{
-//    console.log(req)
-//    res.send("hello word");
-//  })
-
 router.post('/signup',
 [
   check('name').isEmpty(),
@@ -51,7 +45,7 @@ router
  
 router
      .route('/checkwallet')
-     .get()    
+     .get(businessController.chekBusinessWallet)    
 
   
 

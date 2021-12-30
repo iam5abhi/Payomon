@@ -234,8 +234,7 @@ const sendMoenyToWallet=async(req,res,next)=>{
     let {phoneNumber}=req.body
                 try{
                     MerchantPhoneNumber= await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
-                    console.log(MerchantPhoneNumber,'hey vikas are u ok')
-                }catch(err){
+                  }catch(err){
                         console.log("error")
                 }
    let sendingMoney=req.body.wallet
