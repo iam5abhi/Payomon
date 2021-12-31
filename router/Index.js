@@ -4,7 +4,15 @@ const { check } = require('express-validator')
 const res = require('express/lib/response')
 const router = express.Router()
 const businessController = require('../Controller/businessControllers')
-const isAuthentication =  require('../middleware/merchantmiddleware')
+const isAuthenticationMerchant = require('../middleware/merchantmiddleware')
+
+
+
+// router
+//     .route('/')
+//     .get(isAuthenticationMerchant,(req,res,next)=>{
+//           res.send("<h1>Hello cod</h1>")
+//     })
 
 
 router.post('/signup',
@@ -26,26 +34,34 @@ businessController.VerifyBussiness
 )
 
 
-router.route('/').get(isAuthentication,businessController.Transaction)
+router.route('/').get(isAuthenticationMerchant,businessController.Transaction)
 
 router  
     .route('/addbankdetails')
-    .get(businessController.getBankDetails)
-    .post([
-      check('AccountholderName').isEmpty().isLength({min:4,max:20}).withMessage(`The name  must be 4 chartacter minimum and maximum 15 char`),
-      check('AccountNumber').isEmpty().isLength({min:12,max:16}).withMessage(`A/c number min 12 digit number and 16 digit number`),
-      check('BankName').isEmpty(),
-      check('IFSC_CODE').isLength({min:6}).withMessage('IFSC_CODE must be at least 6')
-    ],
-       businessController.AddBank
+    .get(isAuthenticationMerchant,businessController.getBankDetails)
+        .post([
+          check('AccountholderName').isEmpty().isLength({min:4,max:20}).withMessage(`The name  must be 4 chartacter minimum and maximum 15 char`),
+          check('AccountNumber').isEmpty().isLength({min:12,max:16}).withMessage(`A/c number min 12 digit number and 16 digit number`),
+          check('BankName').isEmpty(),
+          check('IFSC_CODE').isLength({min:6}).withMessage('IFSC_CODE must be at least 6')
+        ],
+    isAuthenticationMerchant,  businessController.AddBank
     )
-    .put(businessController.updateBankDetail)
-    .delete(businessController.DeletebankDetail)
+    .put(isAuthenticationMerchant,businessController.updateBankDetail)
+    .delete(isAuthenticationMerchant,businessController.DeletebankDetail)
 
  
 router
      .route('/checkwallet')
-     .get(businessController.chekBusinessWallet)    
+     .get(isAuthenticationMerchant,businessController.chekBusinessWallet)    
+
+
+
+// router
+//     .route('/logout')   
+//     post(isAuthenticationMerchant,(req,res,next)=>{
+
+//     })  
 
   
 

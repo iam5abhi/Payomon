@@ -2,7 +2,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const Customer =require('../Model/Customerschema')
-const  SecretKey ="hellocodeoftic76uy687tu"
+const  SecretKey ="your-256-bit-secret"
 const BusinessModel =require('../Model/BusinessSchema')
 const PaymentModel = require('../Model/paymentSchema')
 const walletcustomerModel = require('../Model/CustomerwalletSchema')
@@ -77,7 +77,6 @@ const createcustomer =async(req,res,next)=>{
                 let Customeruser 
                  try{
                      Customeruser = await Customer.findOne({email:email})
-                     console.log(Customeruser)
                  }catch(err){
                      let error =`Something went Wrong ${err}`
                      res.json({
@@ -95,7 +94,8 @@ const createcustomer =async(req,res,next)=>{
                                    try{
                                        token  = jwt.sign({
                                            userId:Customeruser.id,
-                                           Email:Customeruser.email
+                                           Email:Customeruser.email,
+                                            Name:Customeruser.name
                                        },SecretKey,{ expiresIn :'1h' })
                                      }
                                      catch(err){

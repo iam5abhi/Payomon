@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const res = require('express/lib/response');
 const jwt = require('jsonwebtoken')
 const BusinessModel =require('../Model/BusinessSchema')
-const SecretKey ="chuijswswuqd6429097"
+const SecretKey ="your-256-bit-secret"
 const PaymentModel = require('../Model/paymentSchema')
 const MerchantModel = require('../Model/MerchantBankSchema')
 const BusinesWalletModel = require('../Model/BusinesWalletSchema')
@@ -87,7 +87,7 @@ const creatuser =async(req,res,next)=>{
                              msg:`User Does Not extis Please Signup`
                          })
                      }
-                     const match = await bcrypt.compare(password, Customeruser.password)
+                     const match = await bcrypt.compare(password,User.password)
                      if(match){
                         let token 
                                 try{

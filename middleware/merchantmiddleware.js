@@ -1,19 +1,19 @@
 const jwt = require('jsonwebtoken')
-const SecretKey ="chuijswswuqd6429097"
+//*****************************This are Seceret Key**************************************************************************** */
+const SecretKey ="your-256-bit-secret"
 
-const isAuthentication =async(req,res,next)=>{
-    console.log(req.headers)
-  const token = req.headers["authorization"];
-   console.log(token,"vikaskumarshrivastava")
-   if(token===null) returnres.status(401).json({
-    error: "Token not found",
-  });
-    jwt.verify(token, SecretKey, function(err, user) {
-         if(err) return res.status(401).json({ error: "Invalid token" });
-         req.user =user
-         next()
-  });
+//****************************************** */
+const isAuthenticationMerchant =async(req,res,next)=>{
+  try {
+      const token = req.headers.authorization.split(' ')[1]
+      const data =  jwt.verify(token,SecretKey);
+      if (!data) return res.status(401).json({ error: "Invalid token" });
+      req.data = data;
+      next()
+  }catch (err) {
+      return err;
+  }
 }
 
 
-module.exports =isAuthentication
+module.exports =isAuthenticationMerchant

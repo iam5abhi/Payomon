@@ -37,22 +37,34 @@ router
 
 router
     .route('/payment/:id')
-    .post(isAuthenticationCustomer,customController.PayementMethod)
+    .post(
+         isAuthenticationCustomer,
+         customController.PayementMethod
+         )
 
 
 router
      .route('/wallet')
-     .get(customController.checkWallet)
+     .get(
+          isAuthenticationCustomer,
+          customController.checkWallet
+          )
 
 
 router
      .route('/wallet/:id')
-     .put(customController.updatewallet)
+     .put(
+          isAuthenticationCustomer,
+          customController.updatewallet
+          )
 
 
 router
      .route('/wallet/sendmonytowallet/:id')
-     .put(customController.sendMoenyToWallet)     
+     .put(
+          isAuthenticationCustomer,
+          customController.sendMoenyToWallet
+          )     
 
 
 
