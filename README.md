@@ -36,9 +36,17 @@
         
         
         
-        
-        
-        
+ # Add Bank Detail Merchant       
+        1) Add A bank detail 
+              i) route http://localhost:3400/api/signIn/addbankdetails
+              ii) field are:-
+                      AccountholderName,AccountNumber,BankName,IFSC_CODE
+         2)Check the bank detail 
+                route are :-http://localhost:3400/api/signIn/addbankdetails
+         3) Update the Bank detail
+                   route are:-http://localhost:3400/api/signIn/addbankdetails 
+         4)Delete the bank Detail           
+                    route are:-http://localhost:3400/api/signIn/addbankdetails 
 # CUSTOMER API
 
               #1)Creating a CUSTOMER Signup and Login routes are created
