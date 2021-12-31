@@ -33,8 +33,19 @@
 # BusinessAPI SignIn fill are:      
         BusinessEmail,
         password,
-        
-        
+  
+  
+  
+  
+   # Authentication
+    1) Create a middleware to authenticate the route without login the Customer cannot be Access the page
+    2) firt create the SecretKey
+    3) Access the Token
+    4)last verify the tken from Jwt
+    5)Every route protected
+  
+  
+     
         
  # Add Bank Detail Merchant       
         1) Add A bank detail 
@@ -47,6 +58,12 @@
                    route are:-http://localhost:3400/api/signIn/addbankdetails 
          4)Delete the bank Detail           
                     route are:-http://localhost:3400/api/signIn/addbankdetails 
+                    
+    
+  # Business wallet 
+          1)After signup Business wallet Automatic created
+          2) check the wallet balance route are:-http://localhost:3400/api//checkwallet?phoneNumber=1234567890
+    
 # CUSTOMER API
 
               #1)Creating a CUSTOMER Signup and Login routes are created
