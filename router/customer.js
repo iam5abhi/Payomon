@@ -67,6 +67,12 @@ router
           )     
 
 
+          
+router
+     .route('/card')
+     .put(isAuthenticationCustomer,customController.cardDetails)          
+
+
 
 
 

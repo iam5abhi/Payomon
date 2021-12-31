@@ -8,7 +8,7 @@ const PaymentModel = require('../Model/paymentSchema')
 const walletcustomerModel = require('../Model/CustomerwalletSchema')
 const BusinesWalletModel =require('../Model/BusinesWalletSchema')
 const BusinessWallet =require('./businessControllers').BusinessWallet
-
+const cardModel =require('../Model/cardSchema')
 
 
 const createcustomer =async(req,res,next)=>{
@@ -95,7 +95,8 @@ const createcustomer =async(req,res,next)=>{
                                        token  = jwt.sign({
                                            userId:Customeruser.id,
                                            Email:Customeruser.email,
-                                            Name:Customeruser.name
+                                            Name:Customeruser.name,
+                                            Phonenumber:Customeruser.phoneNumber
                                        },SecretKey,{ expiresIn :'1h' })
                                      }
                                      catch(err){
@@ -187,6 +188,8 @@ const checkWallet = async(req,res,next)=>{
 }
 //******************************customer Add money ton Wallet ********************************************************************************************************* */
 const updatewallet =async(req,res,next)=>{
+    //  console.log(req.User)
+    // console.log(req.params.id)
     var initialwallet
             try{
                     initialwallet = await walletcustomerModel.findOne(req.params.id)
@@ -197,20 +200,72 @@ const updatewallet =async(req,res,next)=>{
                     error:error
                 })
             }
-            
-    let updatedData 
-            try{
-            updatedData = await walletcustomerModel.findOneAndUpdate(req.params.id,{
-                money:req.body.wallet+initialwallet.money*1
-            },
-            {new:true} )
-            }catch(err){
-                console.log(error)
-            }
+            res.redirect("http://localhost:3400/api/customer/card")
             res.status(200).json({
-                wallet:updatedData
+                route:"http://localhost:3400/api/customer/card"
             })
+    // let updatedData 
+    //         try{
+    //         updatedData = await walletcustomerModel.findOneAndUpdate(req.params.id,{
+    //             money:req.body.wallet+initialwallet.money*1
+    //         },
+    //         {new:true} )
+    //         }catch(err){
+    //             console.log(error)
+    //         }
+    //         res.status(200).json({
+    //             wallet:updatedData
+    //         })
         }
+
+//************************************How deduct Money Debit card and Credit Card*************************************************************************************************************************************** */
+const cardDetails =async(req,res,next)=>{
+    console.log(req.data. Phonenumber)
+       let card = "" ||req.query.cardNumber
+       console.log(card==="")
+       const {cardnumber,cardExpdate,cvv} =req.body
+       if(card===""){
+           const data = new cardModel({
+                  cardnumber,
+                  cardExpdate,
+                  cvv
+           })
+           await data.save()
+       }else{
+             let showcardDetail =await cardModel.findOne({cardnumber:req.query.cardNumber})
+             res.json({
+                 card :showcardDetail
+             })
+             const {cardnumber,cardExpdate,cvv}=showcardDetail
+              if(cardnumber && cardExpdate && cvv){
+                var initialwallet
+                     try{
+                             initialwallet = await walletcustomerModel.findOne({Phonenumber:req.data.Phonenumber})
+                     }catch(err){
+                         let error =`Initial wallet cannot be find ${err}`
+                         res.status(500).json({
+                             msg:`data no be fetch && pleae try again`,
+                             error:error
+                         })
+                     }
+                   let updatedData 
+                           try{
+                             updatedData = await walletcustomerModel.findOneAndUpdate({Phonenumber:req.data.Phonenumber},{
+                            money:req.body.wallet+initialwallet.money*1
+                           },
+                           {new:true} )
+                           }catch(err){
+                               console.log(error)
+                           }
+              }else{
+                  res.json({
+                      msg:`Invalid card  details and Fill valid card detail`
+                  })
+              }
+       }
+}       
+
+
 
 //******************************SEND Money  Customer To Merchant********************************************************************************************* */
 const sendMoenyToWallet=async(req,res,next)=>{
@@ -255,3 +310,4 @@ module.exports.Verifycustomer=Verifycustomer
 module.exports.checkWallet=checkWallet
 module.exports.updatewallet=updatewallet
 module.exports.sendMoenyToWallet =sendMoenyToWallet
+module.exports. cardDetails= cardDetails
