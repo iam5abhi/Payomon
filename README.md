@@ -21,7 +21,7 @@
                           i) if user sucessfully login then token will generate from 1hour
                       4) if user Is not exits then show error from your command prompt
                       
-# BusinessAPI_SignUp fill are:
+# BusinessAPI SignUp fill are:
                 name
                 BusinessName,
                 BusinessEmail,
@@ -30,7 +30,7 @@
                 conifrmpassword,
                 pin
                 
-# BusinessAPI_SignIn fill are:      
+# BusinessAPI SignIn fill are:      
         BusinessEmail,
         password,
         
@@ -39,7 +39,7 @@
         
         
         
-# CUSTOMER_API
+# CUSTOMER API
 
               #1)Creating a CUSTOMER Signup and Login routes are created
  
@@ -59,7 +59,7 @@
                           i) if user sucessfully login then token will generate from 1hour
                       4) if user Is not exits then show error from your command prompt
                       
- # CUSTOMER_SignUp fill are:
+ # CUSTOMER SignUp fill are:
                 name
                 Email,
                 Phonenumber,
@@ -67,7 +67,7 @@
                 conifrmpassword,
                 
                 
- # CUSTOMER_SignIn fill are:      
+ # CUSTOMER SignIn fill are:      
         Email,
         password,
         
@@ -80,7 +80,20 @@
          FOM bUSINESSsCHEMA DATA TO BE FIND 
     
          
-       
+ 
+ # Authentication
+    1) Create a middleware to authenticate the route without login the Customer cannot be Access the page
+    2) firt create the SecretKey
+    3) Access the Token
+    4)last verify the tken from Jwt
+    5)Every route protected
+   
+   
+  # Customer Wallet
+     1)After the customer signup the customer wallet Automatically created and by default add 100rs to Customer wallet Automatic
+     2)After the Login the customer can seen the Wallet balance  route are:-http://localhost:3400/api/customer/wallet
+     3)customer Add a blance to wallet   route are:-http://localhost:3400/api/customer/wallet/61cc589d4148f592e1cb06ee
+     4)Customer send a money to merchant   routw are:-http://localhost:3400/api/customer/wallet/sendmonytowallet/61cc589d4148f592e1cb06ee
         
         
         
