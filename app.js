@@ -1,9 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const dbconn = require('./DB/db')
 const app =express()
 const router = require('./router/Index')
 const customerrouter = require('./router/customer')
-
+const port =process.env.Port || 3400
 //*********************Midlleware********************** */
 app.use(express.urlencoded({extended:false}))
 app.use(express.json())
@@ -16,7 +17,7 @@ app.use(express.json())
 app.use('/api',router)
 app.use('/api/customer',customerrouter)
 
-app.listen(3400,()=>{
+app.listen(port,()=>{
     console.log(`Server is running 8000`)
 })
 
