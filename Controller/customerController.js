@@ -262,7 +262,7 @@ const cardDetails =async(req,res,next)=>{
                       msg:`Invalid card  details and Fill valid card detail`
                   })
               }
-       }
+        }
 }       
 
 

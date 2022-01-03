@@ -1,10 +1,10 @@
-require('dotenv').config()
 const express = require('express')
 const dbconn = require('./DB/db')
 const app =express()
 const router = require('./router/Index')
 const customerrouter = require('./router/customer')
-const port =process.env.Port || 3400
+const res = require('express/lib/response')
+const port =process.env.PORT || 3400
 //*********************Midlleware********************** */
 app.use(express.urlencoded({extended:false}))
 app.use(express.json())
@@ -14,6 +14,9 @@ app.use(express.json())
 //  }
 
 //  app.use(logger)
+app.get('/',()=>{
+    res.send("<h1>hellovikad</h1>")
+})
 app.use('/api',router)
 app.use('/api/customer',customerrouter)
 
