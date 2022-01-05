@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 //*****************************This are Seceret Key**************************************************************************** */
-const SecretKey ="your-256-bit-secret"
+const SecretKey =process.env.SECRET_KEY
 
 //****************************************** */
 const isAuthenticationMerchant =async(req,res,next)=>{

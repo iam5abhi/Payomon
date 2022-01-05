@@ -2,8 +2,8 @@ const express =require("express")
 const { check } = require('express-validator')
 const res = require("express/lib/response")
 const router = express.Router()
-const customController = require('../Controller/customerController')
-const isAuthenticationCustomer = require('../middleware/CustomerMidddleware')
+const customController = require('../controller/customerController')
+const isAuthenticationCustomer =require('../middleware/CustomerMidddleware')
 
 
 
@@ -26,7 +26,7 @@ router
         )
 
 router
-   .route('/signiIn')
+   .route('/signin')
    .post([ 
           check('email').isEmail(),
           check('password').isLength({ min : 8,max:15}).isEmpty().withMessage('The password must be 8+ chars long and contain a numbers'),
@@ -35,12 +35,19 @@ router
      )
 
 
-router
-    .route('/payment/:id')
-    .post(
-         isAuthenticationCustomer,
-         customController.PayementMethod
-         )
+router 
+     .route('/changePassword')
+     .post([
+             check('newpassword').isLength({ min : 8,max:15}).isEmpty().withMessage('The password must be 8+ chars long and contain a numbers'),
+             check('newconfirmpassword').isLength({ min : 8,max:15}).isEmpty().withMessage('The password must be 8+ chars long and contain a numbers') 
+           ],isAuthenticationCustomer,customController.customerchangePassword)     
+
+// router
+//     .route('/payment/:id')
+//     .post(
+//          isAuthenticationCustomer,
+//          customController.PayementMethod
+//          )
 
 
 router
@@ -51,29 +58,26 @@ router
           )
 
 
-router
-     .route('/wallet/:id')
-     .put(
-          isAuthenticationCustomer,
-          customController.updatewallet
-          )
 
 
-router
-     .route('/wallet/sendmonytowallet/:id')
-     .put(
-          isAuthenticationCustomer,
-          customController.sendMoenyToWallet
-          )     
+
+
+
+
+ router
+      .route('/sendMoneytoMerchant')
+      .post(isAuthenticationCustomer,customController.sendMoneyToWalletAndbank)          
 
 
           
 router
-     .route('/card')
+     .route('/updatewalletbalancefromcard')
      .put(isAuthenticationCustomer,customController.cardDetails)          
 
 
 
-
+router
+     .route('/deletecarddetail')
+     .delete(isAuthenticationCustomer,customController.cardDetails)    
 
 module.exports = router
