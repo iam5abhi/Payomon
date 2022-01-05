@@ -70,7 +70,11 @@ const createcustomer =async(req,res,next)=>{
             const {email,password,phoneNumber}=req.body
                 let Customeruser 
                  try{
-                     Customeruser = await Customer.findOne({email:email})
+                      if(email){
+                        Customeruser = await Customer.findOne({email:email})
+                      }else{
+                        Customeruser = await Customer.findOne({phoneNumber:phoneNumber})
+                      }
                  }catch(err){
                      let error =`Something went Wrong ${err}`
                      res.json({
@@ -96,16 +100,25 @@ const createcustomer =async(req,res,next)=>{
                                      catch(err){
                                          res.send(err)
                                      }
-                                      res.json({
-                                          message:"Customeruser logged in successful",
-                                          userId:Customeruser.id,
-                                          Email:Customeruser.email,
-                                          token:token
-                                      })        
+                                     if(email){
+                                            res.json({
+                                                message:"Customeruser logged in successful from email",
+                                                userId:Customeruser.id,
+                                                Email:Customeruser.email,
+                                                token:token
+                                            }) 
+                                       }else{
+                                            res.json({
+                                                message:"Customeruser logged in successful from Phonenumber",
+                                                userId:Customeruser.id,
+                                                Phonenumber:Customeruser.phoneNumber,
+                                                token:token
+                                            })  
+                                       }    
                            }else{
                                res.send('err')
                            } 
-                           ||  
+
 
     }
 
