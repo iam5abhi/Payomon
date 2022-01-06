@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const BusinessModel =require('../models/BusinessSchema')
 const SecretKey =process.env.SECRET_KEY
-const PaymentModel = require('../models/paymentSchema')
+const PaymentreceivedModel = require('../models/paymentSchema')
 const MerchantModel = require('../models/MerchantBankSchema')
 const BusinesWalletModel = require('../models/BusinesWalletSchema')
 
@@ -106,20 +106,20 @@ const creatuser =async(req,res,next)=>{
     }
 
 
- const Transaction = async(req,res,next)=>{
-      let transcaction_data 
-       try{
-         transcaction_data = await PaymentModel.find()
-       }catch(err){
-           let error = `data could not be find Please try again`
-          res.send(`<h1>${error}<h1>`)
-       }
-       res.status(200).json({
-           BusinessPhonenumber:transcaction_data.businessPhoneNumer,
-           BusinessName:transcaction_data.businessName,
-           BusinessEmail:transcaction_data.b
-       })
- }
+//  const Transaction = async(req,res,next)=>{
+//       let transcaction_data 
+//        try{
+//          transcaction_data = await PaymentModel.find()
+//        }catch(err){
+//            let error = `data could not be find Please try again`
+//           res.send(`<h1>${error}<h1>`)
+//        }
+//        res.status(200).json({
+//            BusinessPhonenumber:transcaction_data.businessPhoneNumer,
+//            BusinessName:transcaction_data.businessName,
+//            BusinessEmail:transcaction_data.b
+//        })
+//  }
 //******************************************Check a Bank Details**************************************************************************************************************************** */
  const getBankDetails =async(req,res,next)=>{
         res.send(req.query.name)
@@ -255,14 +255,39 @@ const chekBusinessWallet =async(req,res,next)=>{
        })  
 }
 
+//************************************Money Recived from the Client details******************************************************************************************************************** */
+
+const RecivePaymentDetail =async(customerName,customerMobilenumber,money,date)=>{
+     const paymentData = new PaymentreceivedModel({
+        customerName,
+        customerMobilenumber,
+        amount:money,
+        date:date
+     })
+     await paymentData.save()
+}
+
+const getRecivePaymentDetail =async(req,res,next)=>{
+      console.log("hello")
+     try{
+               const recivePayment = await PaymentreceivedModel.find()  
+                res.json({
+                    data:recivePayment
+                })       
+     }catch(err){
+                 res.sendstatus(500)
+     }
+}
+
+
 module.exports.getBankDetails=getBankDetails
 module.exports.AddBank =AddBank
-module.exports.Transaction=Transaction
+// module.exports.Transaction=Transaction
 module.exports.creatuser=creatuser
 module.exports.VerifyBussiness=VerifyBussiness
 module.exports.updateBankDetail =updateBankDetail
 module.exports.DeletebankDetail=DeletebankDetail
 module.exports.BusinessWallet=BusinessWallet
 module.exports.chekBusinessWallet=chekBusinessWallet
-
-
+module.exports.RecivePaymentDetail=RecivePaymentDetail
+module.exports.getRecivePaymentDetail=getRecivePaymentDetail

@@ -34,7 +34,7 @@ businessController.VerifyBussiness
 )
 
 
-router.route('/').get(isAuthenticationMerchant,businessController.Transaction)
+// router.route('/').get(isAuthenticationMerchant,businessController.Transaction)
 
 router  
     .route('/addbankdetails')
@@ -57,12 +57,9 @@ router
 
 
 
-// router
-//     .route('/logout')   
-//     post(isAuthenticationMerchant,(req,res,next)=>{
-
-//     })  
-
+ router  
+     .route('/checksendMoneyDetail')
+     .get(isAuthenticationMerchant,businessController.getRecivePaymentDetail)
   
 
 module.exports=router

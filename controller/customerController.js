@@ -9,6 +9,8 @@ const walletcustomerModel = require('../models/CustomerwalletSchema')
 const BusinesWalletModel =require('../models/BusinesWalletSchema')
 const BusinessWallet =require('./businessControllers').BusinessWallet
 const cardModel =require('../models/cardSchema')
+const RecivePaymentDetail = require('./businessControllers').RecivePaymentDetail
+
 
 const createcustomer =async(req,res,next)=>{
     const {name,email,password,confirmpassword,phoneNumber}= req.body  
@@ -275,6 +277,8 @@ const deleteCardDetail =async(req,res,next)=>{
 
 
  const sendMoneyToWalletAndbank =async(req,res,next)=>{
+     const date = new Date()
+
      const initialBlance = await walletcustomerModel.findOne({Phonenumber:req.data.Phonenumber})
     let {money } =initialBlance
      if(money<req.body.money){
@@ -300,7 +304,7 @@ const deleteCardDetail =async(req,res,next)=>{
                 
                 })
          const {cardnumber,cardExpdate,cvv}=showcardDetail
-                     if(cardnumber && cardExpdate && cvv){ BusinessWallet(req.body.money,MerchantPhoneNumber.phoneNumber) }
+                     if(cardnumber && cardExpdate && cvv){BusinessWallet(req.body.money,MerchantPhoneNumber.phoneNumber),   RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,datte) }
      }else{
            let MerchantPhoneNumber
            let {phoneNumber}=req.body
@@ -320,11 +324,13 @@ const deleteCardDetail =async(req,res,next)=>{
                             res.send(err)
                     }
  //*********************************Calling to the BusinessWallet Function*********************************************************************************************************************************** */
-                    BusinessWallet(sendingMoney,MerchantPhoneNumber.phoneNumber)
+                    BusinessWallet(sendingMoney,MerchantPhoneNumber.phoneNumber),
+                    RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,date)
 
                     res.send(updatewallet)
 
         }
+      
  }
 
 
