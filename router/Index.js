@@ -60,6 +60,8 @@ router
  router  
      .route('/checksendMoneyDetail')
      .get(isAuthenticationMerchant,businessController.getRecivePaymentDetail)
-  
+
+
+
 
 module.exports=router

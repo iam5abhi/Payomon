@@ -78,6 +78,12 @@ router
 
 router
      .route('/deletecarddetail')
-     .delete(isAuthenticationCustomer,customController.cardDetails)    
+     .delete(isAuthenticationCustomer,customController.cardDetails)   
+     
+     
+router
+    .route('/recentpayment')
+    .get(isAuthenticationCustomer,customController.recentPaymentdetails)  
+       
 
 module.exports = router

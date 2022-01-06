@@ -10,6 +10,7 @@ const BusinesWalletModel =require('../models/BusinesWalletSchema')
 const BusinessWallet =require('./businessControllers').BusinessWallet
 const cardModel =require('../models/cardSchema')
 const RecivePaymentDetail = require('./businessControllers').RecivePaymentDetail
+const CustomerpaymentModel = require('../models/customerRecentSchema')
 
 
 const createcustomer =async(req,res,next)=>{
@@ -306,10 +307,10 @@ const deleteCardDetail =async(req,res,next)=>{
          const {cardnumber,cardExpdate,cvv}=showcardDetail
                      if(cardnumber && cardExpdate && cvv){BusinessWallet(req.body.money,MerchantPhoneNumber.phoneNumber),   RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,datte) }
      }else{
-           let MerchantPhoneNumber
+           let Merchantdetails
            let {phoneNumber}=req.body
                 try{
-                    MerchantPhoneNumber= await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
+                    Merchantdetails= await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
                     }catch(err){
                         res.send("error")
                 }
@@ -323,8 +324,17 @@ const deleteCardDetail =async(req,res,next)=>{
                     }catch(err){
                             res.send(err)
                     }
+                   console.log(updatewallet.Phonenumber,req.body.money,"wdeuhgher")
+                    customerdata= new CustomerpaymentModel({
+                        customerPhoneNumber:req.data.Phonenumber,
+                        merchantName:Merchantdetails.name,
+                        merchantMobileNumber:Merchantdetails.phoneNumber,
+                        amount:req.body.money
+                    })
+                    await customerdata.save()
+                    console.log(customerdata)
  //*********************************Calling to the BusinessWallet Function*********************************************************************************************************************************** */
-                    BusinessWallet(sendingMoney,MerchantPhoneNumber.phoneNumber),
+                    BusinessWallet(sendingMoney,Merchantdetails.phoneNumber),
                     RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,date)
 
                     res.send(updatewallet)
@@ -333,7 +343,18 @@ const deleteCardDetail =async(req,res,next)=>{
       
  }
 
-
+const recentPaymentdetails=async(req,res,next)=>{
+     console.log("weurjlifgjhkdfrjlkg")
+      try{
+          const recentPayment = await CustomerpaymentModel.findOne({customerPhoneNumber:req.data.Phonenumber})
+          console.log(recentPayment)
+           res.status(201).json({
+               data:recentPayment
+           })
+      }catch(err){
+          res.sendstatus(500)
+      }
+}
 
 
 module.exports.PayementMethod=PayementMethod
@@ -344,3 +365,4 @@ module.exports. cardDetails= cardDetails
 module.exports.customerchangePassword=customerchangePassword
 module.exports.sendMoneyToWalletAndbank=sendMoneyToWalletAndbank
 module.exports.deleteCardDetail=deleteCardDetail
+module.exports.recentPaymentdetails=recentPaymentdetails
