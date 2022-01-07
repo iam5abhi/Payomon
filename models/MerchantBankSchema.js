@@ -4,15 +4,14 @@ const MerchantSchema = mongoose.Schema({
     AccountholderName:{
         type:String,
         required:true,
-        minlength:3,
+        minlength:4,
         maxlength:10
     },
     AccountNumber:{
         type:Number,
         required:true,
         unique:true,
-        min:12,
-        max:16
+        min:12
     },
     BankName:{
         type:String,

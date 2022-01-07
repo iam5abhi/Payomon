@@ -8,7 +8,7 @@ const BusinesWalletModel = require('../models/BusinesWalletSchema')
 
 const creatuser =async(req,res,next)=>{
     const {name,BusinessName,BusinessEmail,password,confirmpassword,BusinessPhonenumber,pin}= req.body  
-    res.send("Name",name,"BusinessName",BusinessName,"BusinessEmail",BusinessEmail,"password",password,"confirmpassword",confirmpassword,"BusinessPhonenumber",BusinessPhonenumber)
+   console.log("Name",name,"BusinessName",BusinessName,"BusinessEmail",BusinessEmail,"password",password,"confirmpassword",confirmpassword,"BusinessPhonenumber",BusinessPhonenumber)
 
   let existingUser
    try{
@@ -38,7 +38,8 @@ const creatuser =async(req,res,next)=>{
             BusinessEmail,
             BusinessName,
             password:hashpassword,
-            BusinessPhonenumber
+            BusinessPhonenumber,
+            pin:pin
         })
           try{
                 if(password===confirmpassword){
@@ -51,7 +52,7 @@ const creatuser =async(req,res,next)=>{
                 let error = `data is not be saved sucessfully ${err}`
                 res.send(error)
             }
-      res.status(201).json({
+      res.json({
           Name:CreateDBusiness.name,
           BusinessName:CreateDBusiness.BusinessName,
           BusinessEmail:CreateDBusiness.BusinessEmail,
@@ -66,11 +67,9 @@ const creatuser =async(req,res,next)=>{
 ////***************************Business User Login Fuctinalty************************************************** */
      const VerifyBussiness = async(req,res,next)=>{
                  const {BusinessEmail,password}=req.body
-                 res.send(BusinessEmail,'BusinessEmail',password,'password')
                  let User 
                  try{
                      User = await BusinessModel.findOne({BusinessEmail:BusinessEmail})
-                     res.send(User,"vikas")
                  }catch(err){
                      let error =`Something went Wrong ${err}`
                      res.json({
@@ -151,9 +150,9 @@ const creatuser =async(req,res,next)=>{
                 if(existingAccountNumner){
                     res.send('A/c number is already exits')
                 }
-                
+       let AdddBanDetails  
         try{
-            const AdddBanDetails =new MerchantModel({
+             AdddBanDetails =new MerchantModel({
                 AccountholderName,
                 AccountNumber,
                 BankName,
@@ -166,7 +165,7 @@ const creatuser =async(req,res,next)=>{
                  error:err
              })
          }
-         res.status.json({
+         res.status(201).json({
             Name: AdddBanDetails.AccountholderName,
             AccountNumber:AdddBanDetails.AccountNumber,
             BankName:AdddBanDetails.BankName,

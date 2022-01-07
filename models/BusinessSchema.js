@@ -27,6 +27,9 @@ const BusinessSchema  = mongoose.Schema({
     BusinessPhonenumber:{
         type:Number,
         required:true,
+    },
+    pin:{
+        type:Number
     }
 
 })
