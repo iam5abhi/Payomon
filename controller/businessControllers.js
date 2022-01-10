@@ -121,8 +121,7 @@ const creatuser =async(req,res,next)=>{
 //  }
 //******************************************Check a Bank Details**************************************************************************************************************************** */
  const getBankDetails =async(req,res,next)=>{
-        res.send(req.query.name)
-       const AccountNumber=req.query.name
+       const AccountNumber=req.query.AccountNumber
          let ShowAccountDetail 
        try{
          ShowAccountDetail =await MerchantModel.findOne({AccountNumber:AccountNumber})
@@ -131,7 +130,8 @@ const creatuser =async(req,res,next)=>{
                msg:'internal server Error'
            })
        }
-       res.status.json({
+       console.log(ShowAccountDetail)
+       res.status(201).json({
             Name: ShowAccountDetail.AccountholderName,
             AccountNumber:ShowAccountDetail.AccountNumber,
             BankName:ShowAccountDetail.BankName,
@@ -176,11 +176,11 @@ const creatuser =async(req,res,next)=>{
 
 //***********************************Update the Bank Details******************************************************************************************************************************** */
  const updateBankDetail =async(req,res,next)=>{
-      const AccountNumberC=req.query.name
+    const AccountNumber=req.query.AccountNumber
       const {AccountholderName,AccountNumber,BankName,IFSC_CODE} =req.body
                 let updatedData 
                     try{
-                        updatedData = await MerchantModel.findOneAndUpdate(AccountNumberC,{
+                        updatedData = await MerchantModel.findOneAndUpdate(AccountNumber,{
                             AccountholderName,AccountNumber,BankName,IFSC_CODE
                         },
                     {new:true} )
@@ -197,7 +197,7 @@ const creatuser =async(req,res,next)=>{
 
 //*************************************Delete the Bank Detail from my account************************************************************************************************************************** */
 const DeletebankDetail =async(req,res,next)=>{
-    const AccountNumber=req.query.name
+    const AccountNumber=req.query.AccountNumber
              await MerchantModel.findByIdAndRemove(AccountNumber, function(err){
                     if(err){
                         res.send("error",err)
