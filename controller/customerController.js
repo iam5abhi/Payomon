@@ -315,6 +315,14 @@ const recentPaymentdetails=async(req,res,next)=>{
       }
 }
 
+const BusinessUserDetails =async(req,res,next)=>{
+    const Number = req.query.Number
+       let User 
+    
+                User =await BusinessModel.findOne({BusinessPhonenumber:Number})
+                res.send(User)
+}
+
 
 module.exports.createcustomer=createcustomer
 module.exports.Verifycustomer=Verifycustomer
@@ -324,3 +332,4 @@ module.exports.customerchangePassword=customerchangePassword
 module.exports.sendMoneyToWalletAndbank=sendMoneyToWalletAndbank
 module.exports.deleteCardDetail=deleteCardDetail
 module.exports.recentPaymentdetails=recentPaymentdetails
+module.exports.BusinessUserDetails=BusinessUserDetails
