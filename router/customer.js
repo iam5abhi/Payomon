@@ -47,8 +47,8 @@ router
     .get(
         isAuthenticationCustomer,
           (req,res,next)=>{
-              res.send("<h1>hello code Softic</h1>")
-          }
+          res.send("<h1>Hello cod</h1>")
+         }
          )
 
 
