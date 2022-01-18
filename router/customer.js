@@ -45,6 +45,7 @@ router
     router
     .route('/businessUser')
     .get(
+        isAuthenticationCustomer,
          customController.BusinessUserDetails
          )
 
