@@ -44,8 +44,8 @@ router
 
  router
     .route('/pp')
-    .get(isAuthenticationCustomer,(req,res,next)=>{
-          res.send("<h1>Hello cod</h1>")
+    .get(isAuthenticationCustomer,
+         customController.BusinessUserDetails
     })
 
 
