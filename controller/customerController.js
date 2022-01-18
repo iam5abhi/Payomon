@@ -159,13 +159,6 @@ const createcustomer =async(req,res,next)=>{
  }   
 
 
-const BusinessUserDetails =async(req,res,next)=>{
-    const Number = req.query.Number
-       let User 
-    
-                User =await BusinessModel.findOne({BusinessPhonenumber:Number})
-                res.send(User)
-}
 
 
 //***********************************Create Customer wallet******************************************************************************************* */
@@ -323,7 +316,6 @@ const recentPaymentdetails=async(req,res,next)=>{
 }
 
 
-module.exports.BusinessUserDetails=BusinessUserDetails
 module.exports.createcustomer=createcustomer
 module.exports.Verifycustomer=Verifycustomer
 module.exports.checkWallet=checkWallet
