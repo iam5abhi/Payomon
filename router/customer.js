@@ -46,7 +46,9 @@ router
     .route('/llp')
     .get(
         isAuthenticationCustomer,
-         customController.BusinessUserDetails
+          (req,res,next)=>{
+              res.send("<h1>hello code Softic</h1>")
+          }
          )
 
 
