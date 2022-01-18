@@ -43,7 +43,7 @@ router
            ],isAuthenticationCustomer,customController.customerchangePassword)     
 
  router
-    .route('/businessUser')
+    .route('/llp')
     .get(
         isAuthenticationCustomer,
          customController.BusinessUserDetails
