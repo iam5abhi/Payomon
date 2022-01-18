@@ -177,7 +177,7 @@ const creatuser =async(req,res,next)=>{
 //***********************************Update the Bank Details******************************************************************************************************************************** */
  const updateBankDetail =async(req,res,next)=>{
     const AccountNumber=req.query.AccountNumber
-      const {AccountholderName,AccountNumber,BankName,IFSC_CODE} =req.body
+      const {AccountholderName,BankName,IFSC_CODE} =req.body
                 let updatedData 
                     try{
                         updatedData = await MerchantModel.findOneAndUpdate(AccountNumber,{

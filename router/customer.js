@@ -42,12 +42,12 @@ router
              check('newconfirmpassword').isLength({ min : 8,max:15}).isEmpty().withMessage('The password must be 8+ chars long and contain a numbers') 
            ],isAuthenticationCustomer,customController.customerchangePassword)     
 
-// router
-//     .route('/payment/:id')
-//     .post(
-//          isAuthenticationCustomer,
-//          customController.PayementMethod
-//          )
+    router
+    .route('/businessUser')
+    .get(
+         isAuthenticationCustomer,
+         customController.BusinessUserDetails
+         )
 
 
 router

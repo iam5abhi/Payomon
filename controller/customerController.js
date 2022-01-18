@@ -104,20 +104,22 @@ const createcustomer =async(req,res,next)=>{
                                          res.send(err)
                                      }
                                      if(email){
-                                            res.json({
+                                             console.log(token,"hdvwqj")
+                                              console.log(Customeruser.id)
+                                              res.json({
                                                 message:"Customeruser logged in successful from email",
                                                 userId:Customeruser.id,
                                                 Email:Customeruser.email,
                                                 token:token
                                             }) 
-                                       }else{
-                                            res.json({
-                                                message:"Customeruser logged in successful from Phonenumber",
-                                                userId:Customeruser.id,
-                                                Phonenumber:Customeruser.phoneNumber,
+                                      }else{
+                                        res.json({
+                                               message:"Customeruser logged in successful from Phonenumber",
+                                               userId:Customeruser._id,
+                                               Phonenumber:Customeruser.phoneNumber,
                                                 token:token
-                                            })  
-                                       }    
+                                           })  
+                                      }    
                            }else{
                                res.send('err')
                            } 
@@ -157,15 +159,17 @@ const createcustomer =async(req,res,next)=>{
  }   
 
 
-const PayementMethod =async(req,res,next)=>{
-    const Number = req.params.id
-    res.send(Number)
+const BusinessUserDetails =async(req,res,next)=>{
+    console.log("hello word")
+    console.log(req.query.Number)
+    const Number = req.query.Number
        let User 
             try{
                 User =await BusinessModel.findOne({BusinessPhonenumber:Number})
                 res.send(User)
-                res.json({
-                    user:User
+                res.status(201).json({
+                    status:"sucesss",
+                    data:User
                 })
             }catch(err){
                 let error =`data could not be found ${err}`
@@ -174,31 +178,6 @@ const PayementMethod =async(req,res,next)=>{
                     error:error
                 })
             }
-        // const {BusinessName,BusinessEmail,BusinessPhonenumber} = User  
-        // res.send('BusinessName',BusinessName)
-        // res.send('BusinessEmail',BusinessEmail)
-        // res.send('BusinessPhonenumber',BusinessPhonenumber)
-        const {BusinessName,BusinessEmail,BusinessPhonenumber,amount} = req.body
-        const kk =new PaymentModel({
-            businessPhoneNumer:BusinessPhonenumber,
-            businessName:BusinessName,
-            businessEmail:BusinessEmail,
-            amount:amount
-        })
-      try{
-         kk.save()
-      }catch(error){
-          res.send('don`t save a data')
-      }
-
-    //   res.status(201).json({
-    //       id :Sucessfully._id,
-    //       BusinessPhonenumber:Sucessfully.businessPhoneNumer,
-    //       BusinessName:Sucessfully.businessName,
-    //       BusinessEmail:Sucessfully.businessEmail,
-    //       Amout:Sucessfully.amount
-
-    //   })
 }
 
 
@@ -357,7 +336,7 @@ const recentPaymentdetails=async(req,res,next)=>{
 }
 
 
-module.exports.PayementMethod=PayementMethod
+module.exports.BusinessUserDetails=BusinessUserDetails
 module.exports.createcustomer=createcustomer
 module.exports.Verifycustomer=Verifycustomer
 module.exports.checkWallet=checkWallet
