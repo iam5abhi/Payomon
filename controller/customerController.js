@@ -160,24 +160,11 @@ const createcustomer =async(req,res,next)=>{
 
 
 const BusinessUserDetails =async(req,res,next)=>{
-    console.log("hello word")
-    console.log(req.query.Number)
     const Number = req.query.Number
        let User 
-            try{
+    
                 User =await BusinessModel.findOne({BusinessPhonenumber:Number})
                 res.send(User)
-                res.status(201).json({
-                    status:"sucesss",
-                    data:User
-                })
-            }catch(err){
-                let error =`data could not be found ${err}`
-                res.json({
-                    message:'Data not be found',
-                    error:error
-                })
-            }
 }
 
 
