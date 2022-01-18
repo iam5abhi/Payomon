@@ -43,13 +43,10 @@ router
            ],isAuthenticationCustomer,customController.customerchangePassword)     
 
  router
-    .route('/llp')
-    .get(
-        isAuthenticationCustomer,
-          (req,res,next)=>{
+    .route('/pp')
+    .get(isAuthenticationCustomer,(req,res,next)=>{
           res.send("<h1>Hello cod</h1>")
-         }
-         )
+    })
 
 
 router
