@@ -40,4 +40,3 @@ const environment = process.env.NODE_ENV;
 
 
 exports.app = functions.https.onRequest(app);
-

@@ -264,7 +264,7 @@ const deleteCardDetail =async(req,res,next)=>{
                 
                 })
          const {cardnumber,cardExpdate,cvv}=showcardDetail
-                     if(cardnumber && cardExpdate && cvv){BusinessWallet(req.body.money,MerchantPhoneNumber.phoneNumber),   RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,datte) }
+                     if(cardnumber && cardExpdate && cvv){BusinessWallet(req.body.money,MerchantPhoneNumber.phoneNumber),   RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,date) }
      }else{
            let Merchantdetails
            let {phoneNumber}=req.body
@@ -294,7 +294,7 @@ const deleteCardDetail =async(req,res,next)=>{
                     console.log(customerdata)
  //*********************************Calling to the BusinessWallet Function*********************************************************************************************************************************** */
                     BusinessWallet(sendingMoney,Merchantdetails.phoneNumber),
-                    RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,date)
+                    RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,date,Merchantdetails.phoneNumber)
 
                     res.send(updatewallet)
 
@@ -303,12 +303,12 @@ const deleteCardDetail =async(req,res,next)=>{
  }
 
 const recentPaymentdetails=async(req,res,next)=>{
-     console.log("weurjlifgjhkdfrjlkg")
       try{
-          const recentPayment = await CustomerpaymentModel.findOne({customerPhoneNumber:req.data.Phonenumber})
-          console.log(recentPayment)
+          const recentPayment = await CustomerpaymentModel.find({customerPhoneNumber:req.data.Phonenumber})
            res.status(201).json({
-               data:recentPayment
+               data :[{
+                   RecentPaymentDetail:recentPayment
+               }]
            })
       }catch(err){
           res.sendstatus(500)
@@ -316,10 +316,10 @@ const recentPaymentdetails=async(req,res,next)=>{
 }
 
 const BusinessUserDetails =async(req,res,next)=>{
-    const Number = req.query.Number
+    const phoneNumber = req.query.phoneNumber
        let User 
     
-                User =await BusinessModel.findOne({BusinessPhonenumber:Number})
+                User =await BusinessModel.findOne({BusinessPhonenumber:phoneNumber})
                 res.send(User)
 }
 

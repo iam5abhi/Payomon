@@ -1,17 +1,29 @@
 const mongoose = require('mongoose')
+const { required } = require('nodemon/lib/config')
 
 
 const PaymentreceivedShema = mongoose.Schema({
+    businessUserPhoneNumber:{
+        type:Number,
+        required:true,
+        select:false
+        
+    },
     customerName:{
-        type:String
+        type:String,
+        required:true
     },
     customerMobilenumber:{
-        type:Number
+        type:Number,
+        required:true
     },
     amount:{
-        tyep:Number
+            type:Number,
+            required:true
     },
-    date:String
+    date:{
+        type:String
+    }
    
 })
 

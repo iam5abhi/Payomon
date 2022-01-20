@@ -87,7 +87,8 @@ const creatuser =async(req,res,next)=>{
                                 try{
                                     token  = jwt.sign({
                                         UserId:User.id,
-                                        BusinessEmail:User.BusinessEmail
+                                        BusinessEmail:User.BusinessEmail,
+                                        BusinessPhonenumber:User.BusinessPhonenumber
                                     },SecretKey,{ expiresIn :'1h' })
                                 }
                                 catch(err){
@@ -97,6 +98,7 @@ const creatuser =async(req,res,next)=>{
                                     message:"Bussiness user logged in successful",
                                     UserId:User.id,
                                     BusinessEmail:User.BusinessEmail,
+                                    BusinessPhonenumber:User.BusinessPhonenumber,
                                     token:token
                                 })         
                      }else{
@@ -256,22 +258,26 @@ const chekBusinessWallet =async(req,res,next)=>{
 
 //************************************Money Recived from the Client details******************************************************************************************************************** */
 
-const RecivePaymentDetail =async(customerName,customerMobilenumber,money,date)=>{
+const RecivePaymentDetail =async(customerName,customerMobilenumber,amount,date,MerchantPhoneNumber)=>{
      const paymentData = new PaymentreceivedModel({
         customerName,
         customerMobilenumber,
-        amount:money,
+        amount:amount,
+        businessUserPhoneNumber:MerchantPhoneNumber,
         date:date
      })
      await paymentData.save()
 }
 
 const getRecivePaymentDetail =async(req,res,next)=>{
-      console.log("hello")
+    console.log(req.data)
      try{
-               const recivePayment = await PaymentreceivedModel.find()  
+               const recivePayment = await PaymentreceivedModel.find({businessUserPhoneNumber:req.data.BusinessPhonenumber})  
+               console.log(recivePayment)
                 res.json({
-                    data:recivePayment
+                    Data:[{
+                        RecivePaymentDetail:recivePayment
+                    }]
                 })       
      }catch(err){
                  res.sendstatus(500)
@@ -281,7 +287,6 @@ const getRecivePaymentDetail =async(req,res,next)=>{
 
 module.exports.getBankDetails=getBankDetails
 module.exports.AddBank =AddBank
-// module.exports.Transaction=Transaction
 module.exports.creatuser=creatuser
 module.exports.VerifyBussiness=VerifyBussiness
 module.exports.updateBankDetail =updateBankDetail

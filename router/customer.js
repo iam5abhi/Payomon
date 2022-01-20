@@ -43,10 +43,10 @@ router
            ],isAuthenticationCustomer,customController.customerchangePassword)     
 
  router
-    .route('/pp')
+    .route('/BusinessUser')
     .get(isAuthenticationCustomer,
          customController.BusinessUserDetails
-    })
+    )
 
 
 router
