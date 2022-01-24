@@ -227,7 +227,7 @@ const cardDetails =async(req,res,next)=>{
 
 const deleteCardDetail =async(req,res,next)=>{
     const cardNumber =req.query.cardNumber
-     const data =await cardModel.eleteOne({cardnumber:cardNumber})
+     const data =await cardModel.deleteOne({cardnumber:cardNumber})
      if(data){
          res.send('card is delete sucessfully')
      }else{
