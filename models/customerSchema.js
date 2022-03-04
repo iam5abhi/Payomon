@@ -7,7 +7,7 @@ const customerSchema = new Schema({
     email: { type: String, required: true , unique : true},
     password: { type: String , required: true},
     profilePic :{type: String },
-    phoneNumber : { type : Number, required : true},
+    phoneNumber : { type : Number, required : true,unique:true},
 })
 
 

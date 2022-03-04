@@ -19,21 +19,21 @@ app.use(express.json())
 app.use('/api',router)
 app.use('/api/customer',customerrouter)
 
-const environment = process.env.NODE_ENV;
+const environment = process.env.NODE_ENV ;
 
 
  app.listen(port,()=>{
      console.log(`Server is running ${port}`)
-     if (
-        environment !== "production" &&
-        environment !== "development" &&
-        environment !== "testing"
-      ) {
-        console.error(
-          `NODE_ENV is set to ${environment}, but only production and development are valid.`
-        );
-        process.exit(1);
-      }
+   if (
+      environment !== "production" &&
+      environment !== "development" &&
+      environment !== "testing"
+    ) {
+      console.error(
+        `NODE_ENV is set to ${environment}, but only production and development are valid.`
+      );
+      process.exit(1);
+    }
  })
 
 

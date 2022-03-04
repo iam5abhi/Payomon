@@ -69,7 +69,7 @@ const createcustomer =async(req,res,next)=>{
 
 ////***************************Customeruser Login Fuctinalty************************************************** */
      const Verifycustomer = async(req,res,next)=>{
-
+           console.log(req.body)
             const {email,password,phoneNumber}=req.body
                 let Customeruser 
                  try{
@@ -91,6 +91,7 @@ const createcustomer =async(req,res,next)=>{
                      }
                      const match = await bcrypt.compare(password, Customeruser.password)
                            if(match){
+                               
                                  let token 
                                    try{
                                        token  = jwt.sign({
@@ -104,8 +105,6 @@ const createcustomer =async(req,res,next)=>{
                                          res.send(err)
                                      }
                                      if(email){
-                                             console.log(token,"hdvwqj")
-                                              console.log(Customeruser.id)
                                               res.json({
                                                 message:"Customeruser logged in successful from email",
                                                 userId:Customeruser.id,
@@ -121,7 +120,9 @@ const createcustomer =async(req,res,next)=>{
                                            })  
                                       }    
                            }else{
-                               res.send('err')
+                               res.status(403).json({
+                                  message:'Invalid Creditial'
+                               });
                            } 
 
 
@@ -316,11 +317,22 @@ const recentPaymentdetails=async(req,res,next)=>{
 }
 
 const BusinessUserDetails =async(req,res,next)=>{
-    const phoneNumber = req.query.phoneNumber
-       let User 
-    
-                User =await BusinessModel.findOne({BusinessPhonenumber:phoneNumber})
-                res.send(User)
+       try{
+            let User 
+            User =await BusinessModel.find()
+            res.status(201).json({
+               message:'Data Fetch SucessFully',
+               Data:[
+                  User
+               ]
+            })
+
+       }catch(err){
+           res.status(500).json({
+               statusCode:500,
+               message:'Internal Server error,&& failed'
+           })
+       }
 }
 
 

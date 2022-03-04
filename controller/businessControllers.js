@@ -66,61 +66,52 @@ const creatuser =async(req,res,next)=>{
 
 ////***************************Business User Login Fuctinalty************************************************** */
      const VerifyBussiness = async(req,res,next)=>{
-                 const {BusinessEmail,password}=req.body
-                 let User 
-                 try{
-                     User = await BusinessModel.findOne({BusinessEmail:BusinessEmail})
-                 }catch(err){
-                     let error =`Something went Wrong ${err}`
-                     res.json({
-                         error:error
-                     })
-                 } 
-                     if(!User){
-                         res.json({
-                             msg:`User Does Not extis Please Signup`
-                         })
-                     }
-                     const match = await bcrypt.compare(password,User.password)
-                     if(match){
-                        let token 
-                                try{
-                                    token  = jwt.sign({
-                                        UserId:User.id,
-                                        BusinessEmail:User.BusinessEmail,
-                                        BusinessPhonenumber:User.BusinessPhonenumber
-                                    },SecretKey,{ expiresIn :'1h' })
-                                }
-                                catch(err){
-                                    res.send(err)
-                                }
-                                res.json({
-                                    message:"Bussiness user logged in successful",
-                                    UserId:User.id,
-                                    BusinessEmail:User.BusinessEmail,
-                                    BusinessPhonenumber:User.BusinessPhonenumber,
-                                    token:token
-                                })         
-                     }else{
-                         res.send('err')
-                     }                    
+               console.log(req.body)
+               const {BusinessEmail,password}=req.body
+               let User 
+               try{
+                   User = await BusinessModel.findOne({BusinessEmail:BusinessEmail})
+                   console.log(User)
+               }catch(err){
+                   let error =`Something went Wrong ${err}`
+                   res.json({
+                       error:error
+                   })
+               } 
+                   if(!User){
+                       res.json({
+                           msg:`User Does Not extis Please Signup`
+                       })
+                   }
+                   console.log(password)
+                   console.log(User.password)
+                   const match = await bcrypt.compare(password,User.password)
+                   if(match){
+                      let token 
+                              try{
+                                  token  = jwt.sign({
+                                      UserId:User.id,
+                                      BusinessEmail:User.BusinessEmail,
+                                      BusinessPhonenumber:User.BusinessPhonenumber
+                                  },SecretKey,{ expiresIn :'1h' })
+                              }
+                              catch(err){
+                                  res.send(err)
+                              }
+                              res.json({
+                                  message:"Bussiness user logged in successful",
+                                  UserId:User.id,
+                                  BusinessEmail:User.BusinessEmail,
+                                  BusinessPhonenumber:User.BusinessPhonenumber,
+                                  token:token
+                              })         
+                   }else{
+                       res.send('err')
+                   }                    
     }
 
 
-//  const Transaction = async(req,res,next)=>{
-//       let transcaction_data 
-//        try{
-//          transcaction_data = await PaymentModel.find()
-//        }catch(err){
-//            let error = `data could not be find Please try again`
-//           res.send(`<h1>${error}<h1>`)
-//        }
-//        res.status(200).json({
-//            BusinessPhonenumber:transcaction_data.businessPhoneNumer,
-//            BusinessName:transcaction_data.businessName,
-//            BusinessEmail:transcaction_data.b
-//        })
-//  }
+
 //******************************************Check a Bank Details**************************************************************************************************************************** */
  const getBankDetails =async(req,res,next)=>{
        const AccountNumber=req.query.AccountNumber
