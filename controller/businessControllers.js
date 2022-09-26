@@ -8,7 +8,6 @@ const BusinesWalletModel = require('../models/BusinesWalletSchema')
 
 const creatuser =async(req,res,next)=>{
     const {name,BusinessName,BusinessEmail,password,confirmpassword,BusinessPhonenumber,pin}= req.body  
-   console.log("Name",name,"BusinessName",BusinessName,"BusinessEmail",BusinessEmail,"password",password,"confirmpassword",confirmpassword,"BusinessPhonenumber",BusinessPhonenumber)
 
   let existingUser
    try{
@@ -235,14 +234,14 @@ const createBusinessWallet =async(amount,name,phoneNumber)=>{
 
  //******************************************Check Business Wallet************************************************************** */
 const chekBusinessWallet =async(req,res,next)=>{
-    let phoneNumber=req.query.phoneNumber
      let walletBusiness 
          try{
-            walletBusiness =await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
+            walletBusiness =await BusinesWalletModel.findOne({phoneNumber:req.data.BusinessPhonenumber})
          }catch(err){
              res.status(500).send('Internal Server Error')
          }
        res.status(200).json({
+           message:"your walllwt blance is",
            wallet:walletBusiness.wallet
        })  
 }
@@ -261,10 +260,8 @@ const RecivePaymentDetail =async(customerName,customerMobilenumber,amount,date,M
 }
 
 const getRecivePaymentDetail =async(req,res,next)=>{
-    console.log(req.data)
      try{
                const recivePayment = await PaymentreceivedModel.find({businessUserPhoneNumber:req.data.BusinessPhonenumber})  
-               console.log(recivePayment)
                 res.json({
                     Data:[{
                         RecivePaymentDetail:recivePayment
@@ -275,6 +272,10 @@ const getRecivePaymentDetail =async(req,res,next)=>{
      }
 }
 
+
+const WalletBlanceTransferToBankAccount =(req,res,next)=>{
+
+}
 
 module.exports.getBankDetails=getBankDetails
 module.exports.AddBank =AddBank

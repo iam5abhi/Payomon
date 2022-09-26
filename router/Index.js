@@ -8,11 +8,7 @@ const isAuthenticationMerchant = require('../middleware/merchantmiddleware')
 
 
 
-router
-    .route('/')
-    .get((req,res,next)=>{
-           res.send("<h1>Hello cod</h1>")
-     })
+
 
 
 router.post('/signup',
