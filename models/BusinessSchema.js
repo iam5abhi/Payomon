@@ -1,4 +1,5 @@
 const { trim } = require('lodash')
+const bcrypt =require('bcrypt')
 const mongoose = require('mongoose')
 
 const BusinessSchema  = mongoose.Schema({
@@ -24,6 +25,13 @@ const BusinessSchema  = mongoose.Schema({
         type:String,
         required:true,
     },
+    confirmpassowrd:{
+        type:String,
+        required:true,
+        validate: function () {
+            return this.confirmpassowrd === this.password;
+          },
+    },
     BusinessPhonenumber:{
         type:Number,
         required:true,
@@ -33,6 +41,25 @@ const BusinessSchema  = mongoose.Schema({
     }
 
 })
+
+BusinessSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) {
+      return next();
+    }
+
+    console.log("hello","word")
+    const salt = await bcrypt.genSalt();
+    const hashed = await bcrypt.hash(this.password, salt);
+  
+    this.password = hashed;
+    this.confirmpassowrd = undefined;
+  });
+
+
+
+  BusinessSchema.methods.comparepassword=async function(password){
+    return await bcrypt.compare(password,this.password)
+  }  
 
 
 
