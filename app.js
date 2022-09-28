@@ -23,7 +23,6 @@ app.use(
     cors({
       origin: "https://bussiness-payomon-react-9ou9.vercel.app",
       methods: "GET,POST,PUT,PATCH,DELETE",
-      credentials: true,
     })
   );
 
