@@ -59,6 +59,11 @@ router
      .get(isAuthenticationMerchant,businessController.getRecivePaymentDetail)
 
 
+router
+     .route('/checkprofile')  
+     .get(isAuthenticationMerchant,businessController.GetProfileDetails)   
+
+
 
 
 module.exports=router

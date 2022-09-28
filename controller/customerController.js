@@ -7,9 +7,9 @@ const BusinessModel =require('../models/BusinessSchema')
 const PaymentModel = require('../models/paymentSchema')
 const walletcustomerModel = require('../models/CustomerwalletSchema')
 const BusinesWalletModel =require('../models/BusinesWalletSchema')
-const BusinessWallet =require('./businessControllers').BusinessWallet
+const Business =require('./businessControllers')
 const cardModel =require('../models/cardSchema')
-const RecivePaymentDetail = require('./businessControllers').RecivePaymentDetail
+const BusniessPayment = require('./businessControllers')
 const CustomerpaymentModel = require('../models/customerRecentSchema')
 
 
@@ -265,7 +265,7 @@ const deleteCardDetail =async(req,res,next)=>{
                 
                 })
          const {cardnumber,cardExpdate,cvv}=showcardDetail
-                     if(cardnumber && cardExpdate && cvv){BusinessWallet(req.body.money,MerchantPhoneNumber.phoneNumber),   RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,date) }
+                     if(cardnumber && cardExpdate && cvv){ Business.BusinessWallet(req.body.money,MerchantPhoneNumber.phoneNumber),   BusniessPayment.RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,date) }
      }else{
            let Merchantdetails
            let {phoneNumber}=req.body
@@ -294,8 +294,8 @@ const deleteCardDetail =async(req,res,next)=>{
                     await customerdata.save()
                     console.log(customerdata)
  //*********************************Calling to the BusinessWallet Function*********************************************************************************************************************************** */
-                    BusinessWallet(sendingMoney,Merchantdetails.phoneNumber),
-                    RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,date,Merchantdetails.phoneNumber)
+             Business.BusinessWallet(sendingMoney,Merchantdetails.phoneNumber),
+             BusniessPayment.RecivePaymentDetail(req.data.Name,req.data.Phonenumber,req.body.money,date,Merchantdetails.phoneNumber)
 
                     res.send(updatewallet)
 

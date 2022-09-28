@@ -4,110 +4,112 @@ const BusinessModel =require('../models/BusinessSchema')
 const SecretKey =process.env.SECRET_KEY
 const PaymentreceivedModel = require('../models/paymentSchema')
 const MerchantModel = require('../models/MerchantBankSchema')
-const BusinesWalletModel = require('../models/BusinesWalletSchema')
+const BusinesWalletModel = require('../models/BusinesWalletSchema');
+const { json } = require('express/lib/response');
+const { user } = require('firebase-functions/v1/auth');
+const { recentPaymentdetails } = require('./customerController');
+const res = require('express/lib/response');
+
+
+
+
+const generateToken =(data)=>{
+    return jwt.sign({
+        _id:data.id,
+        email:data.BusinessEmail,
+        BusinessPhonenumber:data.BusinessPhonenumber
+     },SecretKey,{
+        expiresIn: 60 * 60 
+     })
+}
+
+
 
 const creatuser =async(req,res,next)=>{
-    const {name,BusinessName,BusinessEmail,password,confirmpassword,BusinessPhonenumber,pin}= req.body  
+    
+       
 
-  let existingUser
-   try{
-     existingUser = await BusinessModel.findOne({BusinessEmail:BusinessEmail})
-    }catch(err){
-       let error =`data cannot be find please try aganin ${err}`
-             res.send(error)
+      if(req.body.password!=req.body.confirmpassword){
+           res.send('password not match');
+      }
 
-    }
-    //*******************check user already reqisted ya not******************************* */
-    if(existingUser){
-       res.send('User is AlreadY Reqisterd')
-     }
-      
-      //***************************hashpassword hacker cannot be hack the password******************************************************** */  
-       let hashpassword
-       try{ 
-            hashpassword = await bcrypt.hash(password,12)
-        }
-        catch(err){
-            const error = `The password Not be bcrypted ${err}`
-            res.send(error)
-        }
+        //check The Existing user
+        BusinessModel.findOne({BusinessEmail:req.body.BusinessEmail},(err,emp)=>{
 
-        const CreateDBusiness = new BusinessModel({
-            name,
-            BusinessEmail,
-            BusinessName,
-            password:hashpassword,
-            BusinessPhonenumber,
-            pin:pin
-        })
-          try{
-                if(password===confirmpassword){
-//******************************password and confirpassword are same  customer Registration SucessFully************************************************************************************************************************/
-                         await  CreateDBusiness.save()
-////**********************************calling for Business Wallet****************************************************************************** */                         
-                     createBusinessWallet(00,CreateDBusiness.name,CreateDBusiness.BusinessPhonenumber)
-                }
-            }catch(err){
-                let error = `data is not be saved sucessfully ${err}`
-                res.send(error)
+        if(emp) return res.status(400).json({ auth : false, message :"email exits"})
+
+        const NewBussinessUser ={
+            name:req.body.name,
+            BusinessName:req.body.BusinessName,
+            BusinessEmail:req.body.BusinessEmail,
+            password:req.body.password,
+            confirmpassowrd:req.body.confirmpassword,
+            BusinessPhonenumber:req.body.BusinessPhonenumber,
+            pin:req.body.pin
+        }  
+
+        const newUser =new BusinessModel(NewBussinessUser)
+
+        newUser.save((err,doc)=>{
+            if(err){
+                res.send(err.message)
             }
-      res.json({
-          Name:CreateDBusiness.name,
-          BusinessName:CreateDBusiness.BusinessName,
-          BusinessEmail:CreateDBusiness.BusinessEmail,
-          BusinessPhonenumber:CreateDBusiness.BusinessPhonenumber,
-          password:CreateDBusiness.password,
-          Pin:CreateDBusiness.pin
-      })
+            createBusinessWallet(00,NewBussinessUser.name,NewBussinessUser.BusinessPhonenumber)
+            res.status(200).json({
+                succes: true,
+                NewBussinessUser: doc,
+              });
+        })
+
+        })
+      
     
 }
 
 
 ////***************************Business User Login Fuctinalty************************************************** */
      const VerifyBussiness = async(req,res,next)=>{
-               console.log(req.body)
-               const {BusinessEmail,password}=req.body
-               let User 
-               try{
-                   User = await BusinessModel.findOne({BusinessEmail:BusinessEmail})
-                   console.log(User)
-               }catch(err){
-                   let error =`Something went Wrong ${err}`
-                   res.json({
-                       error:error
-                   })
-               } 
-                   if(!User){
-                       res.json({
-                           msg:`User Does Not extis Please Signup`
-                       })
-                   }
-                   console.log(password)
-                   console.log(User.password)
-                   const match = await bcrypt.compare(password,User.password)
-                   if(match){
-                      let token 
-                              try{
-                                  token  = jwt.sign({
-                                      UserId:User.id,
-                                      BusinessEmail:User.BusinessEmail,
-                                      BusinessPhonenumber:User.BusinessPhonenumber
-                                  },SecretKey,{ expiresIn :'1h' })
-                              }
-                              catch(err){
-                                  res.send(err)
-                              }
-                              res.json({
-                                  message:"Bussiness user logged in successful",
-                                  UserId:User.id,
-                                  BusinessEmail:User.BusinessEmail,
-                                  BusinessPhonenumber:User.BusinessPhonenumber,
-                                  token:token
-                              })         
-                   }else{
-                       res.send('err')
-                   }                    
+  
+        BusinessModel.findOne({ BusinessEmail:req.body.BusinessEmail}, async function (err, user) {
+    // email is no valid
+    if (!user){
+      res.status(400).json({"message":"The email address you entered isn't connected to an account. Please  Create a new account."})
     }
+
+    const isMatch = await user.comparepassword(req.body.password);
+    // password does not match
+    if (!isMatch) return next(new Error("Invaid credentials", 400));
+
+    //Match The password  then
+    //Generate a Token
+    const token = generateToken(user);
+
+    res.status(200).json({
+      message: "Login SucessFully",
+      _Id: user._id,
+      name: user.name,
+      email: user.BusinessEmail,
+      token: token,
+    });
+})
+                     
+}
+
+
+
+
+const GetProfileDetails =async(req,res,next)=>{
+    BusinessModel.findOne({ BusinessEmail:req.data.email}, async function (err, user) {
+         if(err){
+            res.status(500).json({
+                "message":"Internal server Error"
+            })
+         }
+         res.status(200).json({
+            user
+         })
+    })
+}
 
 
 
@@ -122,7 +124,6 @@ const creatuser =async(req,res,next)=>{
                msg:'internal server Error'
            })
        }
-       console.log(ShowAccountDetail)
        res.status(201).json({
             Name: ShowAccountDetail.AccountholderName,
             AccountNumber:ShowAccountDetail.AccountNumber,
@@ -213,42 +214,54 @@ const createBusinessWallet =async(amount,name,phoneNumber)=>{
 
 
 //*****************************************Received Money for customer functionalty************************************************************** */
- const BusinessWallet =async(CustomersendingMoney,phoneNumber)=>{
-        let initialwallet 
-                try{
-                initialwallet=await BusinesWalletModel.findOne({phoneNumber:phoneNumber})
-                }catch(err){
-                    res.send('not fetch data propery')
-                }
-        let wallet = initialwallet.wallet
-        let updateBusinessWallet
-                try{
-                    updateBusinessWallet = await BusinesWalletModel.findOneAndUpdate(phoneNumber,
-                        {
-                            wallet:wallet+CustomersendingMoney
-                        },{new:true})
-                }catch(err){
-                    res.send('Transaction failed, Please try again')
-                }
+ exports.BusinessWallet =async(CustomersendingMoney,phoneNumber)=>{
+    BusinesWalletModel.findOne({phoneNumber:phoneNumber},function(err,data){
+        if(!data){
+            res.status(404).json({
+                "message":"not found"
+            })
+        }
+        let walletBlnc =parseInt(data.wallet)+parseInt(CustomersendingMoney)
+        const updatedWalletBlance={
+            wallet:walletBlnc
+        }
+        
+        BusinesWalletModel.findOneAndUpdate({phoneNumber:phoneNumber},{$set:updatedWalletBlance},function(err,result){
+            if(!result){
+                res.status(500).json({
+                    message:err.message
+                })
+            }else{
+                res.status(200).json({
+                    result
+                })
+            }
+        })
+    })
+
  }
 
  //******************************************Check Business Wallet************************************************************** */
 const chekBusinessWallet =async(req,res,next)=>{
-     let walletBusiness 
-         try{
-            walletBusiness =await BusinesWalletModel.findOne({phoneNumber:req.data.BusinessPhonenumber})
-         }catch(err){
-             res.status(500).send('Internal Server Error')
-         }
-       res.status(200).json({
-           message:"your walllwt blance is",
-           wallet:walletBusiness.wallet
-       })  
+
+    BusinesWalletModel.findOne({phoneNumber:req.data.BusinessPhonenumber},(err,walletblan)=>{
+          if(err){
+            res.status(500).json({
+                "message":"Internal Server Error"
+            })
+          }
+          res.status(200).json({
+            "message":"Your wallet Blance",
+            wallet:walletblan.wallet
+          })
+    })
+
+
 }
 
 //************************************Money Recived from the Client details******************************************************************************************************************** */
 
-const RecivePaymentDetail =async(customerName,customerMobilenumber,amount,date,MerchantPhoneNumber)=>{
+exports.RecivePaymentDetail =async(customerName,customerMobilenumber,amount,date,MerchantPhoneNumber)=>{
      const paymentData = new PaymentreceivedModel({
         customerName,
         customerMobilenumber,
@@ -260,16 +273,17 @@ const RecivePaymentDetail =async(customerName,customerMobilenumber,amount,date,M
 }
 
 const getRecivePaymentDetail =async(req,res,next)=>{
-     try{
-               const recivePayment = await PaymentreceivedModel.find({businessUserPhoneNumber:req.data.BusinessPhonenumber})  
-                res.json({
-                    Data:[{
-                        RecivePaymentDetail:recivePayment
-                    }]
-                })       
-     }catch(err){
-                 res.sendstatus(500)
-     }
+    PaymentreceivedModel.find({businessUserPhoneNumber:req.data.BusinessPhonenumber},async function(err,recivePayment){
+            if(err){
+               res.status(500).json({
+                "message":"internal server Error"
+               })  
+            }
+            res.status(200).json({
+                recivePayment
+            })
+    })
+
 }
 
 
@@ -283,7 +297,7 @@ module.exports.creatuser=creatuser
 module.exports.VerifyBussiness=VerifyBussiness
 module.exports.updateBankDetail =updateBankDetail
 module.exports.DeletebankDetail=DeletebankDetail
-module.exports.BusinessWallet=BusinessWallet
+
 module.exports.chekBusinessWallet=chekBusinessWallet
-module.exports.RecivePaymentDetail=RecivePaymentDetail
 module.exports.getRecivePaymentDetail=getRecivePaymentDetail
+module.exports.GetProfileDetails=GetProfileDetails
