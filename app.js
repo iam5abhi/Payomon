@@ -21,7 +21,7 @@ console.log("hello")
 
 app.use(
     cors({
-      origin: "https://bussiness-payomon-react-9ou9.vercel.app",
+      origin: "https://bussiness-payomon-react-wqxg.vercel.app",
       methods: "GET,POST,PUT,PATCH,DELETE",
     })
   );
