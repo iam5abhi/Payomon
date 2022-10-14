@@ -31,7 +31,7 @@ businessController.VerifyBussiness
 )
 
 
-// router.route('/').get(isAuthenticationMerchant,businessController.Transaction)
+
 
 router  
     .route('/addbankdetails')
