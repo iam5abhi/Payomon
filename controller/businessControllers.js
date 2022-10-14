@@ -86,7 +86,7 @@ const creatuser =async(req,res,next)=>{
 
     res.status(200).json({
       message: "Login SucessFully",
-      _Id: user._id,
+      id: user._id,
       name: user.name,
       email: user.BusinessEmail,
       token: token,
@@ -115,57 +115,68 @@ const GetProfileDetails =async(req,res,next)=>{
 
 //******************************************Check a Bank Details**************************************************************************************************************************** */
  const getBankDetails =async(req,res,next)=>{
-       const AccountNumber=req.query.AccountNumber
-         let ShowAccountDetail 
-       try{
-         ShowAccountDetail =await MerchantModel.findOne({AccountNumber:AccountNumber})
-       }catch(err){
-           res.status(500),json({
-               msg:'internal server Error'
-           })
-       }
-       res.status(201).json({
-            Name: ShowAccountDetail.AccountholderName,
-            AccountNumber:ShowAccountDetail.AccountNumber,
-            BankName:ShowAccountDetail.BankName,
-            IFSC:ShowAccountDetail.IFSC_CODE
-       })
+   
+    MerchantModel.findOne({AccountNumber:req.query.AccountNumber},(err,accontDteails)=>{
+       if(!accontDteails){
+            res.status(400).json({
+                message:'No Account deat'
+            })
+        }
+         res.status(200).json({
+            AccountholderName:accontDteails.AccountholderName,
+            AccountNumber:accontDteails.AccountNumber
+         })
+    })
  }
 //*******************************************Add Bank details*************************************************************************************************************************** */
  const AddBank  = async(req,res,next)=>{
     const {AccountholderName,AccountNumber,BankName,IFSC_CODE} =req.body
-       let existingAccountNumner 
-                try{
-                    existingAccountNumner = await MerchantModel.findOne({AccountNumber:AccountNumber})
-                }catch(err){
-                    let errror =`cannot be fetch data ${err}`
-                }
-                if(existingAccountNumner){
-                    res.send('A/c number is already exits')
-                }
-       let AdddBanDetails  
-        try{
-             AdddBanDetails =new MerchantModel({
-                AccountholderName,
-                AccountNumber,
-                BankName,
-                IFSC_CODE
-           })  
-                  await AdddBanDetails.save()
-        }catch(err){
-             res.status(500).json({
-                 message:'Bank detail cannot be added',
-                 error:err
-             })
-         }
-         res.status(201).json({
-            Name: AdddBanDetails.AccountholderName,
-            AccountNumber:AdddBanDetails.AccountNumber,
-            BankName:AdddBanDetails.BankName,
-            IFSC:AdddBanDetails.IFSC_CODE
-         })
+    MerchantModel.findOne({AccountNumber:AccountNumber},(err,bandkdata)=>{
+        if(bandkdata){
+            res.status(400).json({
+                message:'This Account Number Already exits'
+            })
+        }
+    })
 
+    const AdddBanDetails = {
+        AccountholderName:AccountholderName,
+        AccountNumber: AccountNumber,
+        BankName: BankName,
+        IFSC_CODE: IFSC_CODE,
+        id:req.data._id
+      };
+
+    const newAccount =new MerchantModel(AdddBanDetails)
+
+    newAccount.save((err,doc)=>{
+        if (err) {
+            console.log(err);
+            res.status(400).json({
+                message:`${err.message}`
+            })
+          }
+          res.status(200).json({
+            message:"Accont Added SucessFully",  
+            succes: true,
+            doc
+          });
+    })
  }
+
+
+exports.YourAddedAccounts =(req,res,next)=>{
+    MerchantModel.find({id:req.data._id},(err,data)=>{
+        if(!data){
+            res.status(404).json({
+                "message":"data not be found"
+            })
+        }
+        res.status(200).json({
+            data
+        })
+    })
+}
 
 //***********************************Update the Bank Details******************************************************************************************************************************** */
  const updateBankDetail =async(req,res,next)=>{

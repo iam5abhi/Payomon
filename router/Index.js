@@ -47,6 +47,10 @@ router
     .put(isAuthenticationMerchant,businessController.updateBankDetail)
     .delete(isAuthenticationMerchant,businessController.DeletebankDetail)
 
+router
+    .route('/added/bankdetail')
+    .get(isAuthenticationMerchant,businessController.YourAddedAccounts)
+
  
 router
      .route('/checkwallet')

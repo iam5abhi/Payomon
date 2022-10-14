@@ -20,6 +20,10 @@ const MerchantSchema = mongoose.Schema({
     IFSC_CODE:{
         type:String,
         required:true
+    },
+    id:{
+       type:String,
+       required:true
     }
 })
 
