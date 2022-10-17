@@ -45,7 +45,7 @@ const creatuser =async(req,res,next)=>{
             password:req.body.password,
             confirmpassowrd:req.body.confirmpassword,
             BusinessPhonenumber:req.body.BusinessPhonenumber,
-            pin:req.body.pin
+            pin:Math.floor(1000 + Math.random() * 9000)
         }  
 
         const newUser =new BusinessModel(NewBussinessUser)
